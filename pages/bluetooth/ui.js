@@ -1,26 +1,26 @@
-import BaseBlueToothImp from '../../libs/bluetooth/base/base-bluetooth-imp';
+import MyBreathBLManager from "./my-bluetooth-manager";
 
 export default class UI {
     constructor(page) {
         this.stateObj = {};
-        this.stateObj[`${BaseBlueToothImp.CONNECTED}`] = function () {
+        this.stateObj[`${MyBreathBLManager.CONNECTED}`] = function () {
             page.setData({
-                connectState: BaseBlueToothImp.CONNECTED
+                connectState: MyBreathBLManager.CONNECTED
             });
         };
-        this.stateObj[`${BaseBlueToothImp.DISCONNECT}`] = function () {
+        this.stateObj[`${MyBreathBLManager.DISCONNECT}`] = function () {
             page.setData({
-                connectState: BaseBlueToothImp.DISCONNECT
+                connectState: MyBreathBLManager.DISCONNECT
             });
         };
-        this.stateObj[`${BaseBlueToothImp.UNAVAILABLE}`] = function () {
+        this.stateObj[`${MyBreathBLManager.UNAVAILABLE}`] = function () {
             page.setData({
-                connectState: BaseBlueToothImp.UNAVAILABLE
+                connectState: MyBreathBLManager.UNAVAILABLE
             });
         };
-        this.stateObj[`${BaseBlueToothImp.CONNECTING}`] = function () {
+        this.stateObj[`${MyBreathBLManager.CONNECTING}`] = function () {
             page.setData({
-                connectState: BaseBlueToothImp.CONNECTING
+                connectState: MyBreathBLManager.CONNECTING
             });
         };
     }

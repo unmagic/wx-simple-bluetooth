@@ -1,6 +1,5 @@
-import HiBreathBLManager from "./hibreath-bluetooth-manager";
+import MyBLManager from "./my-bluetooth-manager";
 import Toast from "../../view/toast";
-import BaseBlueToothImp from "../../libs/bluetooth/base/base-bluetooth-imp";
 import UI from './ui';
 
 Page({
@@ -11,7 +10,7 @@ Page({
     data: {
         devices: [],
         device: {},
-        connectState: BaseBlueToothImp.UNAVAILABLE
+        connectState: MyBLManager.UNAVAILABLE
     },
 
     /**
@@ -19,7 +18,7 @@ Page({
      */
     onLoad(options) {
         this.ui = new UI(this);
-        this.bLEManager = new HiBreathBLManager();
+        this.bLEManager = new MyBLManager();
         this.bLEManager.setBLEListener({
             receiveDataListener: ({result}) => {
 
@@ -31,6 +30,10 @@ Page({
         });
     },
 
+    /**
+     * 断开连接
+     * @param e
+     */
     disconnectDevice(e) {
         this.bLEManager.disconnect().then(() => {
             this.setData({
@@ -39,6 +42,9 @@ Page({
             setTimeout(Toast.success, 0, '已断开连接');
         });
     },
+    /**
+     * 扫描
+     */
     connectHiBreathDevice() {
         this.bLEManager.connect();
     },

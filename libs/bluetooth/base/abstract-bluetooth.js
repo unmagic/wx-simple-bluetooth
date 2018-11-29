@@ -1,3 +1,9 @@
+/**
+ * 微信小程序蓝牙功能的底层封装
+ * 该类的所有业务均为最基础的部分，是不需要进行修改的
+ * 呵呵哒认为这个类是抽象的，这就意味着该类只能被继承(虽然JS中没有抽象类)
+ *
+ */
 export default class AbstractBlueTooth {
     constructor() {
         this._isOpenAdapter = false;
@@ -13,11 +19,24 @@ export default class AbstractBlueTooth {
         };
     }
 
+    /**
+     * 处理从连接的蓝牙中接收到的数据
+     * 该函数必须在子类中重写！
+     * 也千万不要忘了在重写时给这个函数一个返回值，作为处理数据后，传递给UI层的数据
+     * 可以参考_receiveDataInsideListener
+     * @param result 从连接的蓝牙中接收到的数据
+     * @returns 传递给UI层的数据
+     */
     dealReceiveData({result}) {
 
     }
 
 
+    /**
+     * 打开蓝牙适配器
+     * 只有蓝牙开启的状态下，才可执行成功
+     * @returns {Promise<any>}
+     */
     openAdapter() {
         !this._deviceId && (this._deviceId = wx.getStorageSync('deviceId'));
         console.log('设备id', this._deviceId);
@@ -40,6 +59,10 @@ export default class AbstractBlueTooth {
         });
     }
 
+    /**
+     * 关闭蓝牙适配器
+     * @returns {Promise<any>}
+     */
     closeAdapter() {
         return new Promise((resolve, reject) => {
             if (this._isOpenAdapter) {
@@ -65,10 +88,22 @@ export default class AbstractBlueTooth {
     }
 
 
+    /**
+     * 清除上一次连接的蓝牙设备
+     * 这会导致断开目前连接的蓝牙设备
+     */
     clearConnectedBLE() {
-        wx.removeStorageSync('deviceId');
-        this._deviceId = '';
+        this.closeBLEConnection().finally(() => {
+            wx.removeStorageSync('deviceId');
+            this._deviceId = '';
+        });
     }
+
+    /**
+     * 建立蓝牙连接
+     * @param deviceId
+     * @returns {Promise<any>}
+     */
     createBLEConnection({deviceId}) {
         this._deviceId = deviceId;
         this.stopBlueToothDevicesDiscovery();
@@ -83,6 +118,10 @@ export default class AbstractBlueTooth {
         );
     }
 
+    /**
+     * 断开处于连接状态的蓝牙连接
+     * @returns {Promise<any>}
+     */
     closeBLEConnection() {
         return new Promise((resolve, reject) => {
                 wx.stopBluetoothDevicesDiscovery();
@@ -95,6 +134,11 @@ export default class AbstractBlueTooth {
         )
     }
 
+    /**
+     * 设置UUID数组
+     * 这会让你在扫描蓝牙设备时，只保留该UUID数组的蓝牙设备，过滤掉其他的所有设备，提高扫描效率
+     * @param services
+     */
     setUUIDs({services}) {
         if (Array.isArray(services)) {
             this.UUIDs = services;
@@ -103,6 +147,11 @@ export default class AbstractBlueTooth {
         }
     }
 
+    /**
+     * 发送二进制数据
+     * @param buffer ArrayBuffer
+     * @returns {Promise<any>}
+     */
     sendData({buffer}) {
         return new Promise((resolve, reject) => {
             wx.writeBLECharacteristicValue({
@@ -116,6 +165,10 @@ export default class AbstractBlueTooth {
         })
     }
 
+    /**
+     * 停止蓝牙扫描
+     * @returns {Promise<any>}
+     */
     stopBlueToothDevicesDiscovery() {
         return new Promise((resolve, reject) => {
             if (this._isStartDiscovery) {
@@ -132,6 +185,10 @@ export default class AbstractBlueTooth {
 
     }
 
+    /**
+     * 开启蓝牙扫描
+     * @returns {Promise<any>}
+     */
     startBlueToothDevicesDiscovery() {
         return new Promise((resolve, reject) => {
             if (!this._isStartDiscovery) {
@@ -148,12 +205,20 @@ export default class AbstractBlueTooth {
         });
     }
 
+    /**
+     * 获取在蓝牙模块生效期间所有已发现的蓝牙设备。包括已经和本机处于连接状态的设备
+     * @returns {Promise<any>}
+     */
     getBlueToothDevices() {
         return new Promise(((resolve, reject) => wx.getBluetoothDevices({
             success: resolve, fail: reject
         })));
     }
 
+    /**
+     * 根据 uuid 获取处于已连接状态的设备。
+     * @returns {Promise<any>}
+     */
     getConnectedBlueToothDevices() {
         if (!Array.isArray(this.UUIDs)) {
             AbstractBlueTooth._throwUUIDsIsNotArrayError();
@@ -251,7 +316,7 @@ export default class AbstractBlueTooth {
         this._isStartDiscovery = false;
     }
 
-   static _throwUUIDsIsNotArrayError() {
+    static _throwUUIDsIsNotArrayError() {
         throw new Error('the type of services is Array!Please check it out.');
     }
 }
