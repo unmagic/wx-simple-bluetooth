@@ -28,18 +28,18 @@ export default class BaseBlueToothImp extends AbstractBlueTooth {
             }
         };
         let timeoutIndex = 0;
-        wx.onBluetoothDeviceFound((devices) => {
+        wx.onBluetoothDeviceFound(() => {
             if (!!this._scanBLDListener) {
-                this._scanBLDListener({devices});
+                super.getBlueToothDevices().then(res => this._scanBLDListener({devices: res.devices})).catch();
             } else {
                 clearTimeout(timeoutIndex);
                 timeoutIndex = setTimeout(() => {
-                    super.getBlueToothDevices().then((res) => {
+                    super.getBlueToothDevices().then(res => {
                         const {devices} = res;
-                        console.log('发现新的蓝牙设备', devices);
+                        // console.log('发现新的蓝牙设备', devices);
                         if (devices.length > 0) {
                             const device = devices.reduce((prev, cur) => prev.RSSI > cur.RSSI ? prev : cur);
-                            console.log('要连接的设备', device);
+                            // console.log('要连接的设备', device);
                             if (!this._deviceId) {
                                 this._updateFinalState({
                                     promise: this.createBLEConnection({deviceId: device.deviceId})

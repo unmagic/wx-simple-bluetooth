@@ -1,3 +1,94 @@
+# wx-simple-bluetooth
+
+适用平台：微信小程序
+蓝牙：低功耗蓝牙
+
+这个项目使用Promise，封装了微信小程序的蓝牙接口，并且具体实现了常用的行为，对不同的业务也进行了高度的封装，可以很方便的进行小程序的蓝牙开发。主要功能如下：
+
+以下均是在手机开启了蓝牙功能的情况下：
+- 调用connect接口会开启蓝牙适配器并会判断是否连接过蓝牙设备，是的话会自动连接到上一次的蓝牙设备；否则会扫描周边设备，然后自动连接到距离手机最近的蓝牙设备。
+- 可以设置扫描周边蓝牙设备时，主 service 的 uuid 列表，只搜索广播包有对应 uuid 的主服务的蓝牙设备。
+- 监听蓝牙的连接状态。
+- 监听扫描到的所有蓝牙设备。
+- 监听接收到的数据。这块的数据会经过数据处理接口，所以可以直接用于渲染或是他用。
+- 发送数据和处理接收数据接口均已暴露，所以你只需关心发什么数据和如何处理接收到的数据即可，其他的均不必操心。详情见`my-bluetooth-manager.js`
+- 断开蓝牙，关闭蓝牙适配器，清除上次连接的蓝牙痕迹
+- 注意：目前在发送数据时大于20包的数据会被裁剪为20包。
+
+## 应用示例
+
+- 请先在app.js中导入adapter，代码`import 'libs/adapter';`，否则Promise会找不到finally方法的定义
+
+```
+import MyBlueToothManager from "./my-bluetooth-manager";
+import Toast from "../../view/toast";
+import UI from './ui';
+
+Page({
+
+    /**
+     * 页面的初始数据
+     */
+    data: {
+        devices: [],
+        device: {},
+        connectState: MyBlueToothManager.UNAVAILABLE
+    },
+
+    /**
+     * 生命周期函数--监听页面加载
+     */
+    onLoad(options) {
+        this.ui = new UI(this);
+        this.bLEManager = new MyBlueToothManager();
+        //这里我没有设置scanBLEListener，开启扫描后，程序会自动连接到距离手机最近的蓝牙设备
+        this.bLEManager.setBLEListener({
+            receiveDataListener: ({finalResult}) => {
+                //这里的finalResult是经过dealReceiveData({result})处理后得到的结果
+
+            },
+            bleStateListener: ({state}) => {
+                //常见的蓝牙连接状态见MyBreathBLManager
+                console.log('状态', state);
+                this.ui.setState({state});
+            },
+            // scanBLEListener: ({devices}) => {
+            //     //devices是蓝牙模块生效期间所有已发现的蓝牙设备，包括已经和本机处于连接状态的设备
+            // }
+        });
+    },
+
+    /**
+     * 断开连接
+     * @param e
+     */
+    disconnectDevice(e) {
+        this.bLEManager.disconnect().then(() => {
+            this.setData({
+                device: {}
+            });
+            setTimeout(Toast.success, 0, '已断开连接');
+        });
+    },
+    /**
+     * 扫描
+     */
+    connectHiBreathDevice() {
+        this.bLEManager.connect();
+    },
+    /**
+     * 生命周期函数--监听页面卸载
+     */
+    onUnload() {
+        this.bLEManager.closeAll();
+    },
+});
+
+```
+
+## 如何实现你自己的业务：
+
+```
 import SimpleBlueToothImp from "../../libs/bluetooth/simple-bluetooth-imp";
 import BaseBlueToothImp from "../../libs/bluetooth/base/base-bluetooth-imp";
 
@@ -111,3 +202,6 @@ export default class MyBlueToothManager extends SimpleBlueToothImp {
         }
     }
 };
+
+
+```

@@ -1,4 +1,4 @@
-import MyBLManager from "./my-bluetooth-manager";
+import MyBlueToothManager from "./my-bluetooth-manager";
 import Toast from "../../view/toast";
 import UI from './ui';
 
@@ -10,7 +10,7 @@ Page({
     data: {
         devices: [],
         device: {},
-        connectState: MyBLManager.UNAVAILABLE
+        connectState: MyBlueToothManager.UNAVAILABLE
     },
 
     /**
@@ -18,15 +18,21 @@ Page({
      */
     onLoad(options) {
         this.ui = new UI(this);
-        this.bLEManager = new MyBLManager();
+        this.bLEManager = new MyBlueToothManager();
+        //这里我没有设置scanBLEListener，开启扫描后，程序会自动连接到距离手机最近的蓝牙设备
         this.bLEManager.setBLEListener({
-            receiveDataListener: ({result}) => {
+            receiveDataListener: ({finalResult}) => {
+                //这里的finalResult是经过dealReceiveData({result})处理后得到的结果
 
             },
             bleStateListener: ({state}) => {
+                //常见的蓝牙连接状态见MyBreathBLManager
                 console.log('状态', state);
                 this.ui.setState({state});
-            }
+            },
+            // scanBLEListener: ({devices}) => {
+            //     //devices是蓝牙模块生效期间所有已发现的蓝牙设备，包括已经和本机处于连接状态的设备
+            // }
         });
     },
 
