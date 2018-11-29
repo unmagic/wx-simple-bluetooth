@@ -215,3 +215,10 @@ export default class MyBlueToothManager extends SimpleBlueToothImp {
 
 
 ```
+
+## LINK
+
+[Document](https://blog.csdn.net/sinat_27612147/article/details/84634432)
+
+[LICENSE](https://github.com/unmagic/wx-simple-bluetooth/blob/master/LICENSE)
+
