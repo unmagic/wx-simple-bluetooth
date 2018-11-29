@@ -10,7 +10,7 @@ export default class MyBlueToothManager extends SimpleBlueToothImp {
     constructor() {
         super();
         this._isFirstReceive = true;
-        this.setUUIDs({services: ['xxxx']});//xxxx为UUID全称
+        this.setUUIDs({services: []});//设置主Services方式如 this.setUUIDs({services: ['xxxx']})  xxxx为UUID全称，可设置多个
     }
 
     /**
