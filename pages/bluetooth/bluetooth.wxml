@@ -1,0 +1,31 @@
+<!--pages/bluetooth/bluetooth.wxml-->
+<view style="display: flex;flex-direction: column;padding: 20rpx 30rpx;">
+    <text style="color: red;">注意：退出小程序前，请点击下方的"关闭蓝牙"按钮！</text>
+    <text>连接状态：{{connectState}}</text>
+
+    <view style="height: 1rpx;width: 100%;background-color: #cccccc"/>
+    <block wx:for="{{devices}}" wx:key="{{index}}">
+        <view style="display: flex;width: 100%;padding: 30rpx 0;" bindtap="connectThisDevice"
+              data-device-id="{{item.deviceId}}" data-name="{{item.name}}">
+            <view style="width: 40%;">
+                name：{{item.name}}
+            </view>
+            <view>
+                deviceId：{{item.deviceId}}
+            </view>
+        </view>
+        <view style="height: 1rpx;width: 100%;background-color: #cccccc"/>
+    </block>
+    <view style="position: relative;left: 0;top: 100rpx;display: flex;flex-direction: column">
+        <button bindtap="connectHiBreathDevice">
+            连接呼吸酮{{device.deviceId}}设备
+        </button>
+
+        <button bindtap="disconnectDevice"
+                data-name="{{device.name}}" data-device-id="{{device.deviceId}}">
+            断开与{{device.deviceId}}的连接
+        </button>
+    </view>
+
+</view>
+
