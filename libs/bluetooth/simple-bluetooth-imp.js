@@ -52,6 +52,15 @@ export default class SimpleBlueToothImp {
         return this.bluetoothManager.closeAdapter();
     }
 
+    /**
+     * 立即更新蓝牙设备状态
+     * 调用该函数会导致立刻回调bleStateListener函数
+     * @param state
+     */
+    updateBLEStateImmediately({state}) {
+        this.bluetoothManager.updateBLEState({state});
+    }
+
     clearConnectedBLE() {
         this.bluetoothManager.clearConnectedBLE();
     }

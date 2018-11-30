@@ -6,6 +6,9 @@ export default class MyBlueToothManager extends SimpleBlueToothImp {
     static DISCONNECT = BaseBlueToothImp.DISCONNECT;
     static CONNECTING = BaseBlueToothImp.CONNECTING;
     static CONNECTED = BaseBlueToothImp.CONNECTED;
+    //这两个是根据你业务定义的蓝牙状态值，仅供参考
+    static HANDSHAKE_SUCCESS = 'handshake_success';
+    static RECEIVE_DATA_SUCCESS = 'receive_data_success';
 
     constructor() {
         super();
@@ -53,6 +56,7 @@ export default class MyBlueToothManager extends SimpleBlueToothImp {
     /**
      * 处理从蓝牙设备接收到的数据的具体实现
      * 这里会将处理后的数据，作为参数传递给setBLEListener的receiveDataListener监听函数。
+     * 调用super.updateBLEStateImmediately({state})来立即更新蓝牙的状态
      * @param result ArrayBuffer类型 接收到的数据的最原始对象，该参数为从微信的onBLECharacteristicValueChange函数的回调参数
      * @returns {*}
      */
@@ -60,6 +64,8 @@ export default class MyBlueToothManager extends SimpleBlueToothImp {
         if (this._isFirstReceive) {
             this._isFirstReceive = false;
             this._firstHandResponse();
+            //立即更新状态值
+            super.updateBLEStateImmediately({state: MyBlueToothManager.HANDSHAKE_SUCCESS});
         } else {
             //在这里是将接收到的数据，在队尾添加了总和及数据长度，又发送给了蓝牙设备。
             const byteLength = result.value.byteLength;
@@ -77,10 +83,14 @@ export default class MyBlueToothManager extends SimpleBlueToothImp {
             sendDataView.setUint8(byteLength, count);
             sendDataView.setUint8(byteLength + 1, byteLength);
             this.sendData({buffer: sendBuffer});
+            //如果想要setBLEListener先接收数据，再延迟更新蓝牙状态值，可以设置setTimeout
+            setTimeout(() => {
+                super.updateBLEStateImmediately({state: MyBlueToothManager.RECEIVE_DATA_SUCCESS});
+            })
         }
         MyBlueToothManager.logReceiveData({result});
         //这里的result已经是拥有了总和及数据长度的一个ArrayBuffer了，这里应该是返回与UI层的渲染相关的数据，所以我这里是一个错误的演示
-        return result;
+        return {finalResult: result};
     }
 
     /**

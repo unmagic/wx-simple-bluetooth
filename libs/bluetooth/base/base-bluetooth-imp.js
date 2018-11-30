@@ -114,6 +114,10 @@ export default class BaseBlueToothImp extends AbstractBlueTooth {
         return this._updateFinalState({promise: super.closeBLEConnection()});
     }
 
+    updateBLEState({state}) {
+        return this._bleStateListener({state});
+    }
+
     /**
      * 更新蓝牙设备的连接状态，该函数私有
      * 更新状态意味着，最终会回调setBLEListener中传入的bleStateListener函数，
