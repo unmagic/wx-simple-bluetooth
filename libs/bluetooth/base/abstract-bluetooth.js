@@ -15,9 +15,7 @@ export default class AbstractBlueTooth {
         this._receiveDataListener = null;
         this.UUIDs = [];
         this._receiveDataInsideListener = ({result}) => {
-            setTimeout(() => {
-                this._receiveDataListener && this._receiveDataListener({finalResult: this.dealReceiveData({result})});
-            });
+            this._receiveDataListener && this._receiveDataListener({finalResult: this.dealReceiveData({result})});
         };
     }
 
