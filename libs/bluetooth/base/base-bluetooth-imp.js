@@ -9,6 +9,7 @@ export default class BaseBlueToothImp extends AbstractBlueTooth {
     static DISCONNECT = 'disconnect';//蓝牙连接已断开
     static CONNECTING = 'connecting';//正在连接蓝牙设备
     static CONNECTED = 'connected';//已经正常连接到蓝牙设备
+    static NOT_SUPPORT = 'not_support';//当前Android系统版本小于4.3
 
     constructor() {
         super();
@@ -25,6 +26,9 @@ export default class BaseBlueToothImp extends AbstractBlueTooth {
             },
             '10006': {
                 errMsg: 'closeBLEConnection:fail:no connection', type: BaseBlueToothImp.DISCONNECT,
+            },
+            '10009': {
+                errMsg: 'Android System not support', type: BaseBlueToothImp.NOT_SUPPORT
             }
         };
         let timeoutIndex = 0;

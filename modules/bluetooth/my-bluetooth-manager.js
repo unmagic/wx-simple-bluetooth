@@ -64,8 +64,7 @@ export default class MyBlueToothManager extends SimpleBlueToothImp {
     dealReceiveData({receiveBuffer}) {
         const {dataAfterProtocol, state} = this.bluetoothProtocol.receive({receiveBuffer});
         super.updateBLEStateImmediately({state});
-        MyBlueToothManager.logReceiveData({receiveBuffer});
-        dataAfterProtocol.forEach(item => console.log(`经过协议处理后的数据：${item}`));
+        // MyBlueToothManager.logReceiveData({receiveBuffer});
         let finalResult = dataAfterProtocol;
         //这里的result已经是拥有了总和及数据长度的一个ArrayBuffer了，这里应该是返回与UI层的渲染相关的数据，所以我这里是一个错误的演示
         return {finalResult};
