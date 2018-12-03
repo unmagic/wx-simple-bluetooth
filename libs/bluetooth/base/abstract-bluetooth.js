@@ -14,9 +14,9 @@ export default class AbstractBlueTooth {
         this._characteristicId = '';
         this._receiveDataListener = null;
         this.UUIDs = [];
-        this._receiveDataInsideListener = ({result}) => {
+        this._receiveDataInsideListener = ({receiveBuffer}) => {
             if (!!this._receiveDataListener) {
-                const {finalResult} = this.dealReceiveData({result});
+                const {finalResult} = this.dealReceiveData({receiveBuffer});
                 this._receiveDataListener({finalResult});
             }
         };
@@ -27,10 +27,10 @@ export default class AbstractBlueTooth {
      * 该函数必须在子类中重写！
      * 也千万不要忘了在重写时给这个函数一个返回值，作为处理数据后，传递给UI层的数据
      * 可以参考_receiveDataInsideListener
-     * @param result 从连接的蓝牙中接收到的数据
+     * @param receiveBuffer 从连接的蓝牙中接收到的数据
      * @returns 传递给UI层的数据
      */
-    dealReceiveData({result}) {
+    dealReceiveData({receiveBuffer}) {
 
     }
 
@@ -242,7 +242,7 @@ export default class AbstractBlueTooth {
                 if (serverItem.isPrimary) {
                     // 操作之前先监听，保证第一时间获取数据
                     wx.onBLECharacteristicValueChange((res) => {
-                        this._receiveDataInsideListener({result: res});
+                        this._receiveDataInsideListener({receiveBuffer: res.value});
                     });
                     return this._getBLEDeviceCharacteristics({deviceId, serviceId: serverItem.uuid});
                 }

@@ -69,10 +69,10 @@ export default class SimpleBlueToothImp {
      * 处理从连接的蓝牙中接收到的数据
      * 该函数必须在子类中重写！
      * 也千万不要忘了在重写时给这个函数一个返回值，作为处理数据后，传递给UI层的数据
-     * @param result 从连接的蓝牙中接收到的数据
+     * @param receiveBuffer 从连接的蓝牙中接收到的数据
      * @returns 传递给UI层的数据
      */
-    dealReceiveData({result}) {
+    dealReceiveData({receiveBuffer}) {
 
     }
 };

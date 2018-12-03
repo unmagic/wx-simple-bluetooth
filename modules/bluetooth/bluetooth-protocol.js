@@ -62,6 +62,7 @@ export default class BlueToothProtocol {
             const endIndex = dataStartIndex + dataLength;
             dataArray = receiveArray.slice(dataStartIndex, endIndex + 1);
         }
+        console.log('16进制的命令字', commandHex, command, receiveArray);
         return this.action[commandHex]({dataArray});
     }
 

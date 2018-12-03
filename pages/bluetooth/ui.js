@@ -1,4 +1,4 @@
-import MyBreathBLManager from "./my-bluetooth-manager";
+import MyBreathBLManager from "../../modules/bluetooth/my-bluetooth-manager";
 
 export default class UI {
     constructor(page) {
@@ -26,6 +26,11 @@ export default class UI {
     }
 
     setState({state}) {
-        this.stateObj[state]();
+        const fun = this.stateObj[state];
+        if (!!fun) {
+            fun();
+        } else {
+            console.log(`目前没有这种状态：${state}`);
+        }
     }
 }

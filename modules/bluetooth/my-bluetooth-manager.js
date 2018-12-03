@@ -76,9 +76,9 @@ export default class MyBlueToothManager extends SimpleBlueToothImp {
      * @param receiveBuffer
      */
     static logReceiveData({receiveBuffer}) {
-        const byteLength = receiveBuffer.value.byteLength;
+        const byteLength = receiveBuffer.byteLength;
         // const buffer = new ArrayBuffer(byteLength);
-        const dataView = new DataView(receiveBuffer.value, 0);
+        const dataView = new DataView(receiveBuffer, 0);
         for (let k = 0; k < byteLength; k++) {
             console.log(`接收到的数据索引：${k} 值：${dataView.getUint8(k)}`);
         }

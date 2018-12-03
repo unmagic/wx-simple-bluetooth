@@ -1,4 +1,4 @@
-import MyBlueToothManager from "./my-bluetooth-manager";
+import MyBlueToothManager from "../../modules/bluetooth/my-bluetooth-manager";
 import Toast from "../../view/toast";
 import UI from './ui';
 
