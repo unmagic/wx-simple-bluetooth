@@ -2,6 +2,7 @@ import MyBlueToothManager from "../../modules/bluetooth/my-bluetooth-manager";
 import Toast from "../../view/toast";
 import UI from './ui';
 
+const app = getApp();
 Page({
 
     /**
@@ -18,11 +19,13 @@ Page({
      */
     onLoad(options) {
         this.ui = new UI(this);
-        this.bLEManager = new MyBlueToothManager();
+        // this.bLEManager = new MyBlueToothManager();
         //这里我没有设置scanBLEListener，开启扫描后，程序会自动连接到距离手机最近的蓝牙设备
-        this.bLEManager.setBLEListener({
-            receiveDataListener: ({finalResult}) => {
+        console.log(app);
+        app.setBLEListener({
+            receiveDataListener: ({finalResult, state}) => {
                 //这里的finalResult是经过dealReceiveData({result})处理后得到的结果
+                //state为接收到数据时的状态
 
             },
             bleStateListener: ({state}) => {
@@ -41,7 +44,7 @@ Page({
      * @param e
      */
     disconnectDevice(e) {
-        this.bLEManager.disconnect().then(() => {
+        app.getBLEManager().disconnect().then(() => {
             this.setData({
                 device: {}
             });
@@ -52,13 +55,13 @@ Page({
      * 扫描
      */
     connectHiBreathDevice() {
-        this.bLEManager.connect();
+        app.getBLEManager().connect();
     },
     /**
      * 生命周期函数--监听页面卸载
      */
     onUnload() {
-        this.bLEManager.closeAll();
+        app.getBLEManager().closeAll();
     },
 });
 
