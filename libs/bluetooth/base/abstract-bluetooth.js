@@ -96,7 +96,7 @@ export default class AbstractBlueTooth {
      * 这会导致断开目前连接的蓝牙设备
      */
     clearConnectedBLE() {
-        this.closeBLEConnection().finally(() => {
+        this.closeAdapter().finally(() => {
             wx.removeStorageSync('deviceId');
             this._deviceId = '';
         });
