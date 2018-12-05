@@ -44,7 +44,7 @@ Page({
      * @param e
      */
     disconnectDevice(e) {
-        app.getBLEManager().disconnect().then(() => {
+        app.getBLEManager().closeAll().then(() => {
             this.setData({
                 device: {}
             });
