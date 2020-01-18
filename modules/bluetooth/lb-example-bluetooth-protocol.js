@@ -2,7 +2,6 @@ import {LBlueToothProtocolOperator} from "./lb-ble-common-protocol-operator/inde
 import SendBody from "./lb-ble-example-protocol-body/send-body";
 import ReceiveBody from "./lb-ble-example-protocol-body/receive-body";
 import {ProtocolState} from "./lb-bluetooth-state-example";
-import {HexTools} from "./lb-ble-common-tool/tools";
 
 /**
  * 蓝牙协议管理类

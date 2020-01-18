@@ -9,9 +9,9 @@ export const getAppBLEManager = new class extends LBlueToothManager {
     constructor() {
         super();
         super.setFilter({
-            services: ['0000180A-0000-1000-8000-00805F9B34FB'],
+            services: ['0000180B-0000-1000-8000-00805F9B34FB'],
             targetServiceArray: [{
-                serviceId: '6E400001-B5A3-F393-E0A9-E50E24DCCA9F',
+                serviceId: '5E400002-XXXX-XXXX-XXXX-A70E16DCCA0B',
                 characteristicId: '',
                 notify: true,
                 read: true,
@@ -19,6 +19,22 @@ export const getAppBLEManager = new class extends LBlueToothManager {
             targetDeviceName: 'PB1-'
         });
         super.initBLEProtocol({bleProtocol: getAppBLEProtocol});
+    }
+
+    /**
+     * 获取本机蓝牙适配器状态
+     * @returns {Promise<*>} 返回值见小程序官网 wx.getBluetoothAdapterState
+     */
+    async getBLEAdapterState() {
+        return await super.getBLEAdapterState();
+    }
+
+    /**
+     * 获取最新的蓝牙连接状态
+     * @returns {*}
+     */
+    getBLELatestConnectState() {
+        return super.getBLELatestConnectState();
     }
 
     /**

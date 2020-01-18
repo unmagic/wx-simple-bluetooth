@@ -143,6 +143,9 @@ const commonManager = Symbol();
 export default class LBlueToothManager {
     constructor({debug = true} = {}) {
         this[commonManager] = new LBlueToothCommonManager({debug});
+        if (this.overwriteFindTargetDeviceForConnected) {
+            this[commonManager] = this.overwriteFindTargetDeviceForConnected;
+        }
     }
 
     initBLEProtocol({bleProtocol}) {
@@ -180,10 +183,10 @@ export default class LBlueToothManager {
      * 在扫描周围蓝牙设备时，设置用于过滤无关设备的信息
      * 正常来说，该函数只需要调用一次
      * @param services 必填 要搜索的蓝牙设备主 service 的 uuid 列表。详情见微信小程序官网，对于wx.startBluetoothDevicesDiscovery接口的介绍
+     * @param targetServiceMap 必填 用于通信的服务uuid及对应的特征值、notify、read、write属性
      * @param targetDeviceName 非必填 蓝牙设备名称 与localName一致即可，区分大小写。如果不填写这一项或填写为空字符串，则将要连接的设备是经services过滤后的扫描到的第一个设备
-     * @param targetServiceMap 必填 在通信过程中，需要用到的服务uuid及对应的特征值、notify、read、write属性
      */
-    setFilter({services, targetDeviceName, targetServiceArray}) {
+    setFilter({services, targetServiceArray, targetDeviceName}) {
         this[commonManager].setFilter({services, targetDeviceName, targetServiceArray});
     }
 
@@ -196,6 +199,15 @@ export default class LBlueToothManager {
         return await this[commonManager].closeAll();
     }
 
+
+    /**
+     * 获取最新的蓝牙连接状态
+     * @returns {*}
+     */
+    getBLELatestConnectState() {
+        return this[commonManager].getBLELatestConnectState();
+    }
+
     /**
      * 获取本机蓝牙适配器状态
      * @returns {Promise<*>} 返回值见小程序官网 wx.getBluetoothAdapterState
@@ -203,4 +215,5 @@ export default class LBlueToothManager {
     getBLEAdapterState() {
         return this[commonManager].getBLEAdapterState();
     }
+
 }
