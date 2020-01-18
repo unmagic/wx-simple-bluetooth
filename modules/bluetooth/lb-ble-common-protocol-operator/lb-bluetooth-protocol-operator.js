@@ -1,12 +1,13 @@
+const blueToothManager = Symbol();
 export default class LBlueToothProtocolOperator {
 
-    constructor({blueToothManager, protocolSendBody, protocolReceiveBody}) {
+    constructor({protocolSendBody, protocolReceiveBody}) {
         this._protocolQueue = [];
         this.createBuffer = ({command, data}) => {
             return protocolSendBody.createBuffer({command, data});
         };
-        this.sendData = ({command, data}) => {
-            return blueToothManager.sendData({buffer: this.createBuffer({command, data})});
+        this.sendProtocolData = ({command, data}) => {
+            return this[blueToothManager].sendData({buffer: this.createBuffer({command, data})});
         };
         this.receive = ({receiveBuffer}) => {
             return protocolReceiveBody.receive({action: this.receiveAction, receiveBuffer});
@@ -15,6 +16,10 @@ export default class LBlueToothProtocolOperator {
 
         this.receiveAction = this.getReceiveAction();
         this.sendAction = this.getSendAction();
+    }
+
+    setBLEManager(manager) {
+        this[blueToothManager] = manager;
     }
 
     /**

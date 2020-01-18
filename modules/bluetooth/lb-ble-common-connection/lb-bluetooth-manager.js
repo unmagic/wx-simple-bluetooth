@@ -1,6 +1,5 @@
 import CommonBLEConnectionOperation from "./base/common-ble-connection-operation";
 import {CommonConnectState, CommonProtocolState} from "../lb-ble-common-state/state";
-import LBExampleBlueToothProtocol from "../lb-example-bluetooth-protocol";
 
 const MAX_WRITE_NUM = 5, isDebug = Symbol(), BLEPush = Symbol(), reWriteIndex = Symbol(), isAppOnShow = Symbol();
 
@@ -140,11 +139,17 @@ class LBlueToothCommonManager extends CommonBLEConnectionOperation {
     }
 }
 
+const commonManager = Symbol();
 export default class LBlueToothManager {
     constructor({debug = true} = {}) {
-        this.commonManager = new LBlueToothCommonManager({debug});
-        this.bluetoothProtocol = new LBExampleBlueToothProtocol(this.commonManager);
-        this.commonManager.bluetoothProtocol = this.bluetoothProtocol;
+        this[commonManager] = new LBlueToothCommonManager({debug});
+    }
+
+    initBLEProtocol({bleProtocol}) {
+        if (!this[commonManager].bluetoothProtocol) {
+            bleProtocol.setBLEManager(this[commonManager]);
+            this[commonManager].bluetoothProtocol = bleProtocol;
+        }
     }
 
     /**
@@ -157,7 +162,7 @@ export default class LBlueToothManager {
      * 可在子类中重写蓝牙扫描连接规则 详情见 lb-example-bluetooth-manager.js overwriteFindTargetDeviceForConnected
      */
     connect() {
-        this.commonManager.connect();
+        this[commonManager].connect();
     }
 
     /**
@@ -168,7 +173,7 @@ export default class LBlueToothManager {
      * @param onReceiveData 接收到新的蓝牙协议事件
      */
     setBLEListener({onConnectStateChanged, onReceiveData}) {
-        this.commonManager.setBLEListener(arguments[0]);
+        this[commonManager].setBLEListener(arguments[0]);
     }
 
     /**
@@ -179,7 +184,7 @@ export default class LBlueToothManager {
      * @param targetServiceMap 必填 在通信过程中，需要用到的服务uuid及对应的特征值、notify、read、write属性
      */
     setFilter({services, targetDeviceName, targetServiceArray}) {
-        this.commonManager.setFilter({services, targetDeviceName, targetServiceArray});
+        this[commonManager].setFilter({services, targetDeviceName, targetServiceArray});
     }
 
     /**
@@ -188,7 +193,7 @@ export default class LBlueToothManager {
      * @returns {PromiseLike<boolean | never> | Promise<boolean | never>}
      */
     async closeAll() {
-        return await this.commonManager.closeAll();
+        return await this[commonManager].closeAll();
     }
 
     /**
@@ -196,6 +201,6 @@ export default class LBlueToothManager {
      * @returns {Promise<*>} 返回值见小程序官网 wx.getBluetoothAdapterState
      */
     getBLEAdapterState() {
-        return this.commonManager.getBLEAdapterState();
+        return this[commonManager].getBLEAdapterState();
     }
 }

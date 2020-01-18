@@ -2,15 +2,16 @@ import {LBlueToothProtocolOperator} from "./lb-ble-common-protocol-operator/inde
 import SendBody from "./lb-ble-example-protocol-body/send-body";
 import ReceiveBody from "./lb-ble-example-protocol-body/receive-body";
 import {ProtocolState} from "./lb-bluetooth-state-example";
+import {HexTools} from "./lb-ble-common-tool/tools";
 
 /**
  * 蓝牙协议管理类
  * 在这个类中，以配置的方式来编写读操作和写操作
  * 配置方式见下方示例
  */
-export default class LBExampleBlueToothProtocol extends LBlueToothProtocolOperator {
-    constructor(blueToothManager) {
-        super({blueToothManager, protocolSendBody: new SendBody(), protocolReceiveBody: new ReceiveBody()});
+export const getAppBLEProtocol = new class extends LBlueToothProtocolOperator {
+    constructor() {
+        super({protocolSendBody: new SendBody(), protocolReceiveBody: new ReceiveBody()});
     }
 
     /**
@@ -26,7 +27,7 @@ export default class LBExampleBlueToothProtocol extends LBlueToothProtocolOperat
              * @returns {Promise<void>}
              */
             '0x01': async ({red, green, blue}) => {
-                return await this.sendData({command: '0x01', data: [red, green, blue]});
+                return await this.sendProtocolData({command: '0x01', data: [red, green, blue]});
             },
 
             /**
@@ -36,7 +37,11 @@ export default class LBExampleBlueToothProtocol extends LBlueToothProtocolOperat
              */
             '0x02': async ({brightness}) => {
                 //data中的数据，填写多少个数据都可以，可以像上面的3位，也可以像这条6位。你只要能保证data的数据再加上你其他的数据，数组总长度别超过20个就行。
-                return await this.sendData({command: '0x02', data: [brightness, 255, 255, 255, 255, 255]});
+                return await this.sendProtocolData({command: '0x02', data: [brightness, 255, 255, 255, 255, 255]});
+            },
+            //App发送绑定成功
+            '0x03': () => {
+                return this.sendProtocolData({command: '0x03'});
             },
 
         }
@@ -47,6 +52,16 @@ export default class LBExampleBlueToothProtocol extends LBlueToothProtocolOperat
      */
     getReceiveAction() {
         return {
+            //由设备发出的时间戳请求，并隔一段时间发送同步数据
+            '0x04': async ({dataArray}) => {
+                console.log('接收到数据', dataArray);
+                const battery = HexTools.hexArrayToNum(dataArray.slice(0, 1));
+                const version = HexTools.hexArrayToNum(dataArray.slice(1, 3));
+                const deviceId = HexTools.hexArrayToNum(dataArray.slice(3, 11));
+                const now = Date.now() / 1000;
+                await this.sendProtocolData({command: '0x05', data: [now]});
+                return {state: ProtocolState.RECEIVE_COLOR, effectiveData: {battery, version, deviceId}};
+            },
             /**
              * 获取设备当前的灯色（读）
              * 可返回蓝牙协议状态protocolState和接收到的数据effectiveData，
@@ -84,8 +99,9 @@ export default class LBExampleBlueToothProtocol extends LBlueToothProtocolOperat
      * @returns {Promise<[unknown, unknown]>}
      */
     async setColorLightAndBrightness({brightness, red, green, blue}) {
-        return Promise.all([this.sendAction['0x01']({red, green, blue}), this.sendAction['0x02']({brightness})]);
+        return this.sendAction['0x03']();
+        // return Promise.all([this.sendAction['0x01']({red, green, blue}), this.sendAction['0x02']({brightness})]);
     }
 
-};
+}();
 

@@ -1,4 +1,5 @@
 import {LBlueToothManager} from "./lb-ble-common-connection/index";
+import {getAppBLEProtocol} from "./lb-example-bluetooth-protocol";
 
 /**
  * 蓝牙连接方式管理类
@@ -8,15 +9,16 @@ export const getAppBLEManager = new class extends LBlueToothManager {
     constructor() {
         super();
         super.setFilter({
-            services: ['00006666-0000-1000-8000-00805F9B34FB'],
+            services: ['0000180A-0000-1000-8000-00805F9B34FB'],
             targetServiceArray: [{
-                serviceId: '00006666-0000-1000-8000-00805F9B34FB',
+                serviceId: '6E400001-B5A3-F393-E0A9-E50E24DCCA9F',
                 characteristicId: '',
                 notify: true,
                 read: true,
             }],
-            targetDeviceName: 'LB-Light'
+            targetDeviceName: 'PB1-'
         });
+        super.initBLEProtocol({bleProtocol: getAppBLEProtocol});
     }
 
     /**
