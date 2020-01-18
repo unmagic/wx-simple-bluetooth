@@ -35,11 +35,11 @@ export default class IBLEProtocolReceiveBody {
                 const {protocolState, effectiveData} = actionTemp;
                 return {protocolState, effectiveData};
             } else {
-                console.log('协议处理完成，并且返回无状态事件');
+                console.log('接收到的协议已处理完成，因[getReceiveAction]中对应的协议未返回协议状态protocolState，所以本次不通知协议状态');
                 return {protocolState: CommonProtocolState.UNKNOWN};
             }
         } else {
-            console.log('协议中包含了unknown状态');
+            console.warn('接收到的协议无法在[getReceiveAction]中找到对应的协议，可能是您忘记添加了，或是接收到了无效协议，所以本次不通知协议状态');
             return {protocolState: CommonProtocolState.UNKNOWN};
         }
     }
