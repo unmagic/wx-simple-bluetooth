@@ -6,10 +6,10 @@ export default class IBLEProtocolSendBody {
         return new Uint8Array(dataBody).buffer;
     }
 
-    createUpdateBuffer({index, data}) {
-        const dataBody = createUpdateDataBody({index, data});
-        return new Uint8Array(dataBody).buffer;
-    }
+    // createUpdateBuffer({index, data}) {
+    //     const dataBody = createUpdateDataBody({index, data});
+    //     return new Uint8Array(dataBody).buffer;
+    // }
 
 
     /**
@@ -65,10 +65,10 @@ export default class IBLEProtocolSendBody {
     }
 }
 
-function createUpdateDataBody({index, data = []}) {
-    const dataPart = [];
-    data.map(item => HexTools.numToHexArray(item)).forEach(item => dataPart.push(...item));
-    let indexArray = HexTools.numToHexArray(index);
-    indexArray.length === 1 && indexArray.unshift(0);
-    return [170, ...indexArray, ...dataPart];
-}
+// function createUpdateDataBody({index, data = []}) {
+//     const dataPart = [];
+//     data.map(item => HexTools.numToHexArray(item)).forEach(item => dataPart.push(...item));
+//     let indexArray = HexTools.numToHexArray(index);
+//     indexArray.length === 1 && indexArray.unshift(0);
+//     return [170, ...indexArray, ...dataPart];
+// }
