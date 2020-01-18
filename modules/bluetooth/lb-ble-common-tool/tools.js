@@ -53,7 +53,6 @@ export class HexTools {
             return [0];
         }
         let str = num.toString(16);
-        console.log(str);
         str.length % 2 && (str = '0' + str);
         const array = [];
         for (let i = 0, len = str.length; i < len; i += 2) {
