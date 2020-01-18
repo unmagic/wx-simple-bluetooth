@@ -1,15 +1,18 @@
-import SimpleBlueToothImp from "./base/simple-bluetooth-imp";
+import CommonBLEConnectionOperation from "./base/common-ble-connection-operation";
 import {CommonConnectState, CommonProtocolState} from "../lb-ble-common-state/state";
 
-const MAX_WRITE_NUM = 5, isDebug = Symbol(), BLEPush = Symbol(), reWriteIndex = Symbol();
-export default class LBlueToothManager extends SimpleBlueToothImp {
+const MAX_WRITE_NUM = 5, isDebug = Symbol(), BLEPush = Symbol(), reWriteIndex = Symbol(), isAppOnShow = Symbol();
+
+class LBlueToothCommonManager extends CommonBLEConnectionOperation {
 
     constructor({debug = true} = {}) {
         super();
         this[isDebug] = debug;
         this[BLEPush] = [];
         this[reWriteIndex] = 0;
+        this[isAppOnShow] = false;
         wx.onAppShow(() => {
+            this[isAppOnShow] = true;
             if (this.getBLELatestConnectState() === CommonConnectState.CONNECTED) {
                 setTimeout(async () => {
                     await this.resendBLEData();
@@ -17,6 +20,9 @@ export default class LBlueToothManager extends SimpleBlueToothImp {
             } else {
                 this[BLEPush].splice(0, this[BLEPush].length);
             }
+        });
+        wx.onAppHide(() => {
+            this[isAppOnShow] = false;
         });
     }
 
@@ -48,7 +54,7 @@ export default class LBlueToothManager extends SimpleBlueToothImp {
     sendDataCatchError({buffer}) {
         return new Promise(async (resolve, reject) => {
             // if (buffer && buffer.byteLength) {
-            if (getApp().isAppOnShow) {
+            if (this[isAppOnShow]) {
                 await this._sendData({buffer, resolve, reject});
             } else {
                 this[BLEPush].push({buffer, resolve, reject});
@@ -135,4 +141,37 @@ export default class LBlueToothManager extends SimpleBlueToothImp {
             }
         }
     }
-};
+}
+
+export default class LBlueToothManager {
+    constructor({debug = true} = {}) {
+        this.commonManager = new LBlueToothCommonManager({debug});
+    }
+
+    clearConnectedBLE() {
+        return super.clearConnectedBLE();
+    }
+
+    /**
+     * 关闭蓝牙适配器
+     * 调用此接口会先断开蓝牙连接，停止蓝牙设备的扫描，并关闭蓝牙适配器
+     * @returns {PromiseLike<boolean | never> | Promise<boolean | never>}
+     */
+    async closeAll() {
+        return await this.commonManager.closeAll();
+    }
+
+
+    async resendBLEData() {
+        await this.commonManager.resendBLEData();
+    }
+
+    /**
+     * 发送数据细节的封装
+     * 这里根据你自己的业务自行实现
+     * @param buffer
+     */
+    sendData({buffer}) {
+        return this.commonManager.sendData({buffer});
+    }
+}

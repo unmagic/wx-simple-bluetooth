@@ -2,7 +2,7 @@ import BaseBlueToothImp from "./base-bluetooth-imp";
 
 const bluetoothManager = Symbol('bluetoothManager');
 
-export default class SimpleBlueToothImp {
+export default class CommonBLEConnectionOperation {
     constructor() {
         this[bluetoothManager] = new BaseBlueToothImp();
         this[bluetoothManager].dealReceiveData = this.dealReceiveData.bind(this);
@@ -44,7 +44,7 @@ export default class SimpleBlueToothImp {
     /**
      * 连接蓝牙
      * 默认的蓝牙扫描和连接规则是，同一设备重复上报，上报周期是250ms，在这一个周期内，去连接信号最强的设备
-     * 如果连接失败了，会重新连接（重连的不一定是上一个设备）
+     * 如果连接失败了，会重新扫描、连接（重连的不一定是上一个设备）
      * 注意！！程序每次都会重新扫描周围设备再连接，并不会缓存上一次连接的设备直接用deviceId来连接
      * 异步执行
      * 可在子类中重写蓝牙扫描连接规则 详情见 lb-example-bluetooth-manager.js overwriteFindTargetDeviceForConnected
