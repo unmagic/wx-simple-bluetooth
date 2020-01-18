@@ -1,0 +1,47 @@
+{
+  "_args": [
+    [
+      "heheda-bluetooth@2.0.1",
+      "/Users/biao/WXProject/hibox"
+    ]
+  ],
+  "_from": "heheda-bluetooth@2.0.1",
+  "_id": "heheda-bluetooth@2.0.1",
+  "_inBundle": false,
+  "_integrity": "sha512-sfJ+f9es3rIkJk1i2ZXvH81TkQOl+8bA6MCrgurGO5Mdo4UpwitIclmgbegKXgcXF9mcWREC8m0uoYx18OFG4g==",
+  "_location": "/heheda-bluetooth",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "heheda-bluetooth@2.0.1",
+    "name": "heheda-bluetooth",
+    "escapedName": "heheda-bluetooth",
+    "rawSpec": "2.0.1",
+    "saveSpec": null,
+    "fetchSpec": "2.0.1"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "http://192.168.1.56:4873/heheda-bluetooth/-/heheda-bluetooth-2.0.1.tgz",
+  "_spec": "2.0.1",
+  "_where": "/Users/biao/WXProject/hibox",
+  "author": {
+    "name": "liubiao"
+  },
+  "dependencies": {
+    "heheda-adapter": "^1.0.0",
+    "heheda-bluetooth-state": "^1.0.2",
+    "heheda-network": "^1.1.7",
+    "heheda-update": "^1.0.0"
+  },
+  "description": "小程序项目蓝牙通用组件",
+  "license": "MIT",
+  "main": "index.js",
+  "name": "heheda-bluetooth",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "2.0.1"
+}

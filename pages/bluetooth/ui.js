@@ -1,26 +1,26 @@
-import MyBreathBLManager from "../../modules/bluetooth/my-bluetooth-manager";
+import {ConnectState} from "../../modules/bluetooth/lb-bluetooth-state-example";
 
 export default class UI {
     constructor(page) {
         this.stateObj = {};
-        this.stateObj[`${MyBreathBLManager.CONNECTED}`] = function () {
+        this.stateObj[`${ConnectState.CONNECTED}`] = function () {
             page.setData({
-                connectState: MyBreathBLManager.CONNECTED
+                connectState: ConnectState.CONNECTED
             });
         };
-        this.stateObj[`${MyBreathBLManager.DISCONNECT}`] = function () {
+        this.stateObj[`${ConnectState.DISCONNECT}`] = function () {
             page.setData({
-                connectState: MyBreathBLManager.DISCONNECT
+                connectState: ConnectState.DISCONNECT
             });
         };
-        this.stateObj[`${MyBreathBLManager.UNAVAILABLE}`] = function () {
+        this.stateObj[`${ConnectState.UNAVAILABLE}`] = function () {
             page.setData({
-                connectState: MyBreathBLManager.UNAVAILABLE
+                connectState: ConnectState.UNAVAILABLE
             });
         };
-        this.stateObj[`${MyBreathBLManager.CONNECTING}`] = function () {
+        this.stateObj[`${ConnectState.CONNECTING}`] = function () {
             page.setData({
-                connectState: MyBreathBLManager.CONNECTING
+                connectState: ConnectState.CONNECTING
             });
         };
     }

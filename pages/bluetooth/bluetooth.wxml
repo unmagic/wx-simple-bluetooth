@@ -18,12 +18,12 @@
     </block>
     <view style="position: relative;left: 0;top: 100rpx;display: flex;flex-direction: column">
         <button bindtap="connectHiBreathDevice">
-            连接呼吸酮{{device.deviceId}}设备
+            连接蓝牙{{device.deviceId}}设备
         </button>
 
         <button bindtap="disconnectDevice"
                 data-name="{{device.name}}" data-device-id="{{device.deviceId}}">
-            断开与{{device.deviceId}}的连接
+            断开与{{device.deviceId||'  暂未连接到设备  '}}的连接
         </button>
     </view>
 
