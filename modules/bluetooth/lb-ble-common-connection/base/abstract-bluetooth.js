@@ -131,7 +131,7 @@ export default class AbstractBlueTooth extends IBLEOperator {
         return await closeBLEConnection({deviceId});
     }
 
-    setFilter({services, targetServiceArray}) {
+    setFilter({services = [], targetServiceArray = []}) {
         if (Array.isArray(targetServiceArray) && targetServiceArray.length > 0) {
             this._targetServiceMap = targetServiceArray[0].serviceId;
         } else {

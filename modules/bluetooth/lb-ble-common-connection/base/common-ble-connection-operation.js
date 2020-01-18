@@ -37,10 +37,6 @@ export default class CommonBLEConnectionOperation {
         return this[bluetoothManager].sendData({buffer});
     }
 
-    getDeviceMacAddress() {
-        return this[bluetoothManager].getDeviceMacAddress();
-    }
-
     /**
      * 连接蓝牙
      * 默认的蓝牙扫描和连接规则是，同一设备重复上报，上报周期是250ms，在这一个周期内，去连接信号最强的设备

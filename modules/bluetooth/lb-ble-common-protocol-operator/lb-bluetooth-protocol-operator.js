@@ -1,7 +1,6 @@
 export default class LBlueToothProtocolOperator {
 
     constructor({blueToothManager, protocolSendBody, protocolReceiveBody}) {
-        this.blueToothManager = blueToothManager;
         this._protocolQueue = [];
         this.createBuffer = ({command, data}) => {
             return protocolSendBody.createBuffer({command, data});
