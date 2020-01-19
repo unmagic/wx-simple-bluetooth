@@ -72,6 +72,11 @@ export default class BaseBlueTooth extends AbstractBlueTooth {
 
     async createBLEConnection({deviceId}) {
         try {
+            try {
+                await super.stopBlueToothDevicesDiscovery();
+            } catch (e) {
+                console.error('连接完成后，停止扫描周围设备失败', e);
+            }
             this.setDefaultOnBLEConnectionStateChangeListener();
             const {serviceId, characteristicId} = await super.createBLEConnection({
                 deviceId,
@@ -80,11 +85,7 @@ export default class BaseBlueTooth extends AbstractBlueTooth {
             this._serviceId = serviceId;
             this._characteristicId = characteristicId;
             this.setDeviceId({deviceId});
-            try {
-                await super.stopBlueToothDevicesDiscovery();
-            } catch (e) {
-                console.error('连接完成后，停止扫描周围设备失败', e);
-            }
+
             return {isConnected: true};
         } catch (error) {
             switch (error.errCode) {
