@@ -41,11 +41,14 @@ export default class BaseBlueToothImp extends BaseBlueTooth {
         onBluetoothDeviceFound(async (res) => {
             console.log('扫描到周边设备', res);
             if (!this._isConnectBindDevice) {
+                this._isConnectBindDevice = true;
                 const {devices} = res, {targetDevice} = this.findTargetDeviceNeedConnected({devices});
                 if (targetDevice) {
                     const {deviceId} = targetDevice;
                     console.log('扫描到目标设备，并开始连接', deviceId, targetDevice);
                     await this._updateBLEConnectFinalState({promise: super.createBLEConnection({deviceId})});
+                } else {
+                    this._isConnectBindDevice = false;
                 }
             }
         });
@@ -54,7 +57,7 @@ export default class BaseBlueToothImp extends BaseBlueTooth {
     setDefaultOnBLEConnectionStateChangeListener() {
         if (!this._onBLEConnectionStateChangeListener) {
             this._onBLEConnectionStateChangeListener = async ({deviceId, connected}) => {
-                console.log('监听到蓝牙连接状态改变', deviceId, connected);
+                console.log('监听到蓝牙连接状态改变 deviceId=', deviceId, 'connected', connected);
                 if (!connected) {
                     this.latestConnectState = {value: CommonConnectState.DISCONNECT, filter: true};
                     await this.openAdapterAndConnectLatestBLE();
@@ -76,11 +79,11 @@ export default class BaseBlueToothImp extends BaseBlueTooth {
         for (let device of devices) {
             if (!!targetDeviceName) {
                 if (device.localName && device.localName.includes(targetDeviceName)) {
-                    this._isConnectBindDevice = true;
+                    // this._isConnectBindDevice = true;
                     tempFilterArray.push(device);
                 }
             } else {
-                this._isConnectBindDevice = true;
+                // this._isConnectBindDevice = true;
                 tempFilterArray.push(device);
             }
         }
