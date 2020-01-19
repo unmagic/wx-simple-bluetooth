@@ -125,29 +125,32 @@ export function notifyBLECharacteristicValueChange({deviceId, serviceId, charact
  * 注册读写notify监听，该事件要发生在连接上设备之后
  * @param deviceId 已连接的设备id
  * @param targetServiceUUID 目标蓝牙服务UUID
+ * @param targetCharacteristics 目标蓝牙服务对应的特征值，包括writeCharacteristicId, notifyCharacteristicId, readCharacteristicId
  * @returns {Promise<{serviceId, characteristicId: *, deviceId: *}>}
  */
-export async function notifyBLE({deviceId, targetServiceUUID}) {
-    // const {characteristics, serviceId} = findTargetServiceByUUID({deviceId, targetServiceUUID});
+export async function notifyBLE({deviceId, targetServiceUUID, targetCharacteristics}) {
     const {characteristics, serviceId} = await findTargetServiceByUUID({deviceId, targetServiceUUID});
-    let read = -1, notify = -1, write = -1, characteristicId = '';
-    for (let i = 0, len = characteristics.length; i < len; i++) {
-        let item = characteristics[i], properties = item.properties, uuid = item.uuid;
-        if (notify === -1 && (properties.notify || properties.indicate)) {
-            await notifyBLECharacteristicValueChange({deviceId, serviceId, characteristicId: uuid, state: true});
-            console.warn('已注册notify事件 characteristicId:', uuid);
-            notify = i;
-        }
-        if (read === -1 && (properties.read)) {
-            read = i;
-            await readBLECharacteristicValue({deviceId, serviceId, characteristicId: uuid});
-            console.warn('本次读特征值是 characteristicId:', uuid);
-        }
-        if (write !== i && write === -1 && properties.write) {
-            write = i;
-            characteristicId = uuid;
-            console.warn('本次写特征值是 characteristicId:', characteristicId);
-        }
+    const {writeCharacteristicId, notifyCharacteristicId, readCharacteristicId} = targetCharacteristics;
+    let characteristicId = '';
+    const notifyItem = characteristics.find(({uuid}) => uuid === notifyCharacteristicId);
+    if (notifyItem) {
+        await notifyBLECharacteristicValueChange({
+            deviceId,
+            serviceId,
+            characteristicId: notifyCharacteristicId,
+            state: true
+        });
+        console.warn('已注册notify事件 characteristicId:', notifyCharacteristicId);
+    }
+    const readItem = characteristics.find(({uuid}) => uuid === readCharacteristicId);
+    if (readItem) {
+        await readBLECharacteristicValue({deviceId, serviceId, characteristicId: readCharacteristicId});
+        console.warn('本次读特征值是 characteristicId:', readCharacteristicId);
+    }
+    const writeItem = characteristics.find(({uuid}) => uuid === writeCharacteristicId);
+    if (writeItem) {
+        characteristicId = writeCharacteristicId;
+        console.warn('本次写特征值是 characteristicId:', writeCharacteristicId);
     }
     return {serviceId, characteristicId};
 }

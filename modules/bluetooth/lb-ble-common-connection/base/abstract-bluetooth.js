@@ -96,7 +96,7 @@ export default class AbstractBlueTooth extends IBLEOperator {
     constructor() {
         super();
         this.UUIDs = [];
-        this._targetServiceMap = '';//暂时是service uuid
+        this._targetServiceArray = {};//暂时是service及write\read\notify特征字
     }
 
     async openAdapter() {
@@ -123,7 +123,12 @@ export default class AbstractBlueTooth extends IBLEOperator {
                 !filter && valueChangeListener({protocolState, value});
             }
         });
-        return await notifyBLE({deviceId, targetServiceUUID: this._targetServiceMap});
+        const {serviceId, writeCharacteristicId, notifyCharacteristicId, readCharacteristicId} = this._targetServiceArray;
+        return await notifyBLE({
+            deviceId,
+            targetServiceUUID: serviceId,
+            targetCharacteristics: {writeCharacteristicId, notifyCharacteristicId, readCharacteristicId}
+        });
     }
 
 
@@ -133,7 +138,7 @@ export default class AbstractBlueTooth extends IBLEOperator {
 
     setFilter({services = [], targetServiceArray = []}) {
         if (Array.isArray(targetServiceArray) && targetServiceArray.length > 0) {
-            this._targetServiceMap = targetServiceArray[0].serviceId;
+            this._targetServiceArray = targetServiceArray[0];
         } else {
             throw new Error('the type of targetServiceMap is not Array!Please check it out.');
         }
