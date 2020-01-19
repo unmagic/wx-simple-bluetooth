@@ -11,8 +11,6 @@ Page({
      * 页面的初始数据
      */
     data: {
-        devices: [],
-        device: {},
         connectState: ConnectState.UNAVAILABLE
     },
 
