@@ -86,8 +86,7 @@ export const getAppBLEProtocol = new class extends LBlueToothProtocolOperator {
      * @returns {Promise<[unknown, unknown]>}
      */
     async setColorLightAndBrightness({brightness, red, green, blue}) {
-        return this.sendAction['0x03']();
-        // return Promise.all([this.sendAction['0x01']({red, green, blue}), this.sendAction['0x02']({brightness})]);
+        return Promise.all([this.sendAction['0x01']({red, green, blue}), this.sendAction['0x02']({brightness})]);
     }
 
 }();

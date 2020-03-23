@@ -20,6 +20,9 @@ Page({
     onLoad(options) {
         this.ui = new UI(this);
         console.log(app);
+        //监听蓝牙连接状态、订阅蓝牙协议接收事件
+        //多次订阅只会在最新订阅的函数中生效。
+        //建议在app.js中订阅，以实现全局的事件通知
         getAppBLEManager.setBLEListener({
             onConnectStateChanged: async (res) => {
                 const {connectState} = res;
@@ -47,7 +50,7 @@ Page({
              * 接收到的蓝牙设备传给手机的有效数据，只包含你最关心的那一部分
              * protocolState和value具体的内容是在lb-example-bluetooth-protocol.js中定义的
              *
-             * @param protocolState 蓝牙协议状态
+             * @param protocolState 蓝牙协议状态值，string类型，值是固定的几种，详情示例见：
              * @param value 传递的数据，对应lb-example-bluetooth-protocol.js中的{effectiveData}字段
              */
             onReceiveData: ({protocolState, value}) => {
@@ -65,6 +68,7 @@ Page({
      * @returns {Promise<void>}
      */
     async disconnectDevice(e) {
+        // closeAll() 不仅会断开蓝牙连接及适配器，也会清空当前在协议发送队列中、但未发送的协议
         await getAppBLEManager.closeAll();
         this.setData({
             device: {}
