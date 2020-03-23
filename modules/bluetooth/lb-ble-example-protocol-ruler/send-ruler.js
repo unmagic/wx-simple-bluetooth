@@ -18,7 +18,7 @@ export default class SendRuler extends IBLEProtocolSendRuler {
         const endFlag = 233;
         //该示例中checkSum的生成规则是计算协议从第0个元素累加到结束标志
         let checkSum = endFlag + HexTools.hexToNum(command);
-        for (let item of this.getDataBeforeEffectiveData()) {
+        for (let item of this.getDataBeforeCommandData()) {
             checkSum += item;
         }
         for (let item of effectiveData) {
