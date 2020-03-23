@@ -1,6 +1,6 @@
 import {LBlueToothProtocolOperator} from "./lb-ble-common-protocol-operator/index";
-import SendRuler from "./lb-ble-example-protocol-ruler/send-ruler";
-import ReceiveRuler from "./lb-ble-example-protocol-ruler/receive-ruler";
+import SendBody from "./lb-ble-example-protocol-body/send-body";
+import ReceiveBody from "./lb-ble-example-protocol-body/receive-body";
 import {ProtocolState} from "./lb-bluetooth-state-example";
 
 /**
@@ -10,7 +10,7 @@ import {ProtocolState} from "./lb-bluetooth-state-example";
  */
 export const getAppBLEProtocol = new class extends LBlueToothProtocolOperator {
     constructor() {
-        super({protocolSendBody: new SendRuler(), protocolReceiveBody: new ReceiveRuler()});
+        super({protocolSendBody: new SendBody(), protocolReceiveBody: new ReceiveBody()});
     }
 
     /**
@@ -51,9 +51,9 @@ export const getAppBLEProtocol = new class extends LBlueToothProtocolOperator {
         return {
             /**
              * 获取设备当前的灯色（读）
-             * 可返回蓝牙协议状态protocolState和接收到的数据effectiveData，
+             * 可return蓝牙协议状态protocolState和接收到的数据effectiveData，
              * 该方法的返回值，只要拥有非空的protocolState，该框架便会同步地通知前端同protocolState类型的消息
-             * 当然是在你订阅了setBLEListener({onReceiveData})时才会在前端接收到消息。
+             * 当然是在你订阅了setBLEListener({onReceiveData})时才会在订阅的地方接收到消息。
              */
             '0x10': ({dataArray}) => {
                 const [red, green, blue] = dataArray;
@@ -73,6 +73,13 @@ export const getAppBLEProtocol = new class extends LBlueToothProtocolOperator {
             '0x12': () => {
                 //你可以不传递effectiveData
                 return {protocolState: ProtocolState.RECEIVE_LIGHT_CLOSE};
+            },
+            /**
+             * 接收到蓝牙设备的其他一些数据
+             */
+            '0x13': ({dataArray}) => {
+                //do something
+                //你可以不返回任何值
             }
         };
     }

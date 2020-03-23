@@ -1,6 +1,6 @@
 import {HexTools} from "../lb-ble-common-tool/index";
 
-export default class IBLEProtocolSendRuler {
+export default class IBLEProtocolSendBody {
     createBuffer({command, effectiveData}) {
         const dataBody = this.createDataBody({command, effectiveData});
         return new Uint8Array(dataBody).buffer;

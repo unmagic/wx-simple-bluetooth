@@ -1,12 +1,12 @@
-import {IBLEProtocolSendRuler} from "../lb-ble-common-protocol-ruler/index";
+import {IBLEProtocolSendBody} from "../lb-ble-common-protocol-body/index";
 import {HexTools} from "../lb-ble-common-tool/index";
 
 
 /**
- * 蓝牙协议发送规则示例
+ * 组装蓝牙协议发送数据示例
  * 该框架的蓝牙协议必须按照约定格式来制定，最多20个字节
  */
-export default class SendRuler extends IBLEProtocolSendRuler {
+export default class SendBody extends IBLEProtocolSendBody {
 
     getDataBeforeCommandData({command, effectiveData} = {}) {
         //有效数据前的数据 该示例只返回了帧头110
