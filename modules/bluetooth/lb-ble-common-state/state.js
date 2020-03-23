@@ -1,3 +1,4 @@
+//公共的蓝牙连接状态，此为示例
 const CommonConnectState = {
     //蓝牙的常见状态值
     UNBIND: 'unbind',//未绑定
@@ -8,8 +9,8 @@ const CommonConnectState = {
     NOT_SUPPORT: 'not_support',//当前Android系统版本小于4.3
 };
 
+//公共的蓝牙协议状态，此为示例
 const CommonProtocolState = {
-
     UNKNOWN: 'unknown',//未知状态
     NORMAL_PROTOCOL: 'normal_protocol',//无需处理的协议
     CONNECTED_AND_BIND: 'connected_and_bind',
@@ -19,9 +20,6 @@ const CommonProtocolState = {
     GET_CONNECTED_RESULT_SUCCESS: 'get_connected_result_success',//设备返回连接结果
     SEND_CONNECTED_REQUIRED: 'send_connected_required',//手机发送连接请求
     TIMESTAMP: 'timestamp',//设备获取时间戳
-    DORMANT: 'dormant',//设备休眠
-    UPDATING: 'updating',//设备升级中
-    UPDATE_FINISH: 'update_finish',//设备升级完成
     FIND_DEVICE: 'find_device',//找到了设备
 };
 
