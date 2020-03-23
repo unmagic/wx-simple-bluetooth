@@ -1,6 +1,6 @@
 import {LBlueToothProtocolOperator} from "./lb-ble-common-protocol-operator/index";
-import SendRuler from "./lb-ble-example-protocol-body/send-ruler";
-import ReceiveRuler from "./lb-ble-example-protocol-body/receive-ruler";
+import SendRuler from "./lb-ble-example-protocol-ruler/send-ruler";
+import ReceiveRuler from "./lb-ble-example-protocol-ruler/receive-ruler";
 import {ProtocolState} from "./lb-bluetooth-state-example";
 
 /**
