@@ -3,13 +3,12 @@ import {HexTools} from "../lb-ble-common-tool/index";
 
 
 /**
- * 蓝牙协议发送体示例
- * 该框架的蓝牙协议是按照约定格式来制定的
- * 发送协议格式示例：110(帧头)、10(命令字)、255、255、255(这三个255是蓝牙设备设置灯光的有效数据位)、13(校验位，这个13是我随便写的)
+ * 蓝牙协议发送规则示例
+ * 该框架的蓝牙协议必须按照约定格式来制定，最多20个字节
  */
 export default class SendRuler extends IBLEProtocolSendRuler {
 
-    getDataBeforeEffectiveData({command, effectiveData} = {}) {
+    getDataBeforeCommandData({command, effectiveData} = {}) {
         //有效数据前的数据 该示例只返回了帧头110
         return [110];
     }

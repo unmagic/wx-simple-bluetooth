@@ -26,7 +26,7 @@ export const getAppBLEProtocol = new class extends LBlueToothProtocolOperator {
              * @returns {Promise<void>}
              */
             '0x01': async ({red, green, blue}) => {
-                return await this.sendProtocolData({command: '0x01', data: [red, green, blue]});
+                return await this.sendProtocolData({command: '0x01', effectiveData: [red, green, blue]});
             },
 
             /**
@@ -36,7 +36,7 @@ export const getAppBLEProtocol = new class extends LBlueToothProtocolOperator {
              */
             '0x02': async ({brightness}) => {
                 //data中的数据，填写多少个数据都可以，可以像上面的3位，也可以像这条6位。你只要能保证data的数据再加上你其他的数据，数组总长度别超过20个就行。
-                return await this.sendProtocolData({command: '0x02', data: [brightness, 255, 255, 255, 255, 255]});
+                return await this.sendProtocolData({command: '0x02', effectiveData: [brightness, 255, 255, 255, 255, 255]});
             },
         }
     }

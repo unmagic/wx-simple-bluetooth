@@ -3,15 +3,17 @@ import {CommonProtocolState} from "../lb-ble-common-state/state";
 
 /**
  * 蓝牙接收数据后，截取有效数据及自定义的蓝牙协议状态给子类
+ * 必须按照约定的协议格式来制定协议
+ * 协议约定格式：[...命令字之前的数据(非必需), 命令字(必需), ...有效数据(非必需), 有效数据之后的数据(非必需 如协议结束标志校、验位等)
  */
 export default class IBLEProtocolReceiveRuler {
     /**
      * @param commandIndex 命令字所在位置的索引
-     * @param dataStartIndex 有效数据开始的索引
+     * @param effectiveDataStartIndex 有效数据开始的索引
      */
-    constructor({commandIndex, dataStartIndex}) {
+    constructor({commandIndex, effectiveDataStartIndex}) {
         this.commandIndex = commandIndex;
-        this.dataStartIndex = dataStartIndex;
+        this.effectiveDataStartIndex = effectiveDataStartIndex;
     }
 
     /**
@@ -66,8 +68,8 @@ export default class IBLEProtocolReceiveRuler {
     getEffectiveReceiveData({receiveArray}) {
         let effectiveReceiveDataLength = this.getEffectiveReceiveDataLength({receiveArray}), dataArray = [];
         if (effectiveReceiveDataLength > 0) {
-            const endIndex = this.dataStartIndex + effectiveReceiveDataLength;
-            dataArray = receiveArray.slice(this.dataStartIndex, endIndex);
+            const endIndex = this.effectiveDataStartIndex + effectiveReceiveDataLength;
+            dataArray = receiveArray.slice(this.effectiveDataStartIndex, endIndex);
         }
         return {dataArray};
     }

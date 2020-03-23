@@ -1,8 +1,8 @@
 import {HexTools} from "../lb-ble-common-tool/index";
 
 export default class IBLEProtocolSendRuler {
-    createBuffer({command, data}) {
-        const dataBody = this.createDataBody({command, data});
+    createBuffer({command, effectiveData}) {
+        const dataBody = this.createDataBody({command, effectiveData});
         return new Uint8Array(dataBody).buffer;
     }
 
@@ -22,32 +22,31 @@ export default class IBLEProtocolSendRuler {
      * 关于有效数据前的数据、有效数据等相关的介绍，见 IBLEProtocolReceiveBody类的{getEffectiveReceiveData}函数的相关介绍
      *
      * @param command {String} 命令字
-     * @param data {Array} 要发送的数据
+     * @param effectiveData {Array} 要发送的数据(即有效数据)
      * @returns {*[]}
      */
-    createDataBody({command = '', data = []}) {
-        return [...this.getDataBeforeEffectiveData({
+    createDataBody({command = '', effectiveData = []}) {
+        return [...this.getDataBeforeCommandData({
             command,
-            effectiveData: data
+            effectiveData
         }),
             HexTools.hexToNum(command),
-            ...data,
+            ...effectiveData,
             ...this.getDataAfterEffectiveData({
                 command,
-                effectiveData: data
+                effectiveData
             })];
     }
 
 
     /**
-     * 有效数据之前的数据
-     * 关于有效数据前的数据相关的介绍，见 IBLEProtocolReceiveBody类的{getEffectiveReceiveData}函数的相关介绍
+     * 命令字之前的数据
      *
      * @param command {String} 命令字
      * @param effectiveData {Array} 有效数据
      * @returns {Array}
      */
-    getDataBeforeEffectiveData({command, effectiveData} = {}) {
+    getDataBeforeCommandData({command, effectiveData} = {}) {
         return [];
     }
 
