@@ -32,7 +32,7 @@ export default class CommonBLEConnectionOperation {
      * 正常来说，该函数只需要调用一次
      * @param services 必填 要搜索的蓝牙设备主 service 的 uuid 列表。详情见微信小程序官网，对于wx.startBluetoothDevicesDiscovery接口的介绍
      * @param targetDeviceName 非必填 蓝牙设备名称 与localName一致即可，区分大小写。如果不填写这一项或填写为空字符串，则将要连接的设备是经services过滤后的扫描到的第一个设备
-     * @param targetServiceMap 必填 在通信过程中，需要用到的服务uuid及对应的特征值、notify、read、write属性
+     * @param targetServiceArray 必填 在通信过程中，需要用到的服务uuid及对应的特征值、notify、read、write属性
      */
     setFilter({services, targetDeviceName, targetServiceArray}) {
         this[bluetoothManager].setFilter({services, targetDeviceName, targetServiceArray});

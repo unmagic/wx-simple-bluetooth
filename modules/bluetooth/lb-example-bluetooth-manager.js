@@ -8,15 +8,16 @@ import {getAppBLEProtocol} from "./lb-example-bluetooth-protocol";
 export const getAppBLEManager = new class extends LBlueToothManager {
     constructor() {
         super();
+        //setFilter详情见
         super.setFilter({
-            services: ['0000180A-0000-1000-8000-00805F9B34FB'],
+            services: ['0000xxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'],//必填
             targetServiceArray: [{
-                serviceId: '6E400001-B5A3-F393-E0A9-E50E24DCCA9F',
-                writeCharacteristicId: '6E400002-B5A3-F393-E0A9-E50E24DCCA9F',
-                notifyCharacteristicId: '6E400003-B5A3-F393-E0A9-E50E24DCCA9F',
-                readCharacteristicId: '',
+                serviceId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',//必填
+                writeCharacteristicId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxE',//必填
+                notifyCharacteristicId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxF',//必填
+                readCharacteristicId: '',//非必填
             }],
-            targetDeviceName: 'PB1-'
+            targetDeviceName: '目标蓝牙设备的广播数据段中的 LocalName 数据段，如：smart-voice'//非必填
         });
         super.initBLEProtocol({bleProtocol: getAppBLEProtocol});
     }

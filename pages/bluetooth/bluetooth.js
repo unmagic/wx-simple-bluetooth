@@ -47,7 +47,7 @@ Page({
              * 接收到的蓝牙设备传给手机的有效数据，只包含你最关心的那一部分
              * protocolState和value具体的内容是在lb-example-bluetooth-protocol.js中定义的
              *
-             * @param protocolState 蓝牙协议
+             * @param protocolState 蓝牙协议状态
              * @param value 传递的数据，对应lb-example-bluetooth-protocol.js中的{effectiveData}字段
              */
             onReceiveData: ({protocolState, value}) => {
@@ -55,7 +55,7 @@ Page({
             }
         });
 
-        //这里执行连接后，程序会按照你指定的规则（setFilter中指定的），自动连接到距离手机最近的蓝牙设备
+        //这里执行连接后，程序会按照你指定的规则（位于getAppBLEManager中的setFilter中指定的），自动连接到距离手机最近的蓝牙设备
         getAppBLEManager.connect();
     },
 
