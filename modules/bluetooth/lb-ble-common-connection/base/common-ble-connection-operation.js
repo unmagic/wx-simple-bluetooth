@@ -9,6 +9,9 @@ export default class CommonBLEConnectionOperation {
 
     }
 
+    /**
+     * 暂未调用
+     */
     init() {
         if (this.overwriteFindTargetDeviceForConnectedObj) {
             const {fun, context} = this.overwriteFindTargetDeviceForConnectedObj;
@@ -31,10 +34,10 @@ export default class CommonBLEConnectionOperation {
      * 在扫描周围蓝牙设备时，设置用于过滤无关设备的信息
      * 正常来说，该函数只需要调用一次
      * @param services 必填 要搜索的蓝牙设备主 service 的 uuid 列表。详情见微信小程序官网，对于wx.startBluetoothDevicesDiscovery接口的介绍
+     * @param targetServiceArray 必填 在通信过程中，需要用到的服务uuid及对应的特征值、notify、read、write属性，目前只会与传入的第一组通信，后续会增加与多组服务通信的功能
      * @param targetDeviceName 非必填 蓝牙设备名称 与localName一致即可，区分大小写。如果不填写这一项或填写为空字符串，则将要连接的设备是经services过滤后的扫描到的第一个设备
-     * @param targetServiceArray 必填 在通信过程中，需要用到的服务uuid及对应的特征值、notify、read、write属性
      */
-    setFilter({services, targetDeviceName, targetServiceArray}) {
+    setFilter({services, targetServiceArray, targetDeviceName}) {
         this[bluetoothManager].setFilter({services, targetDeviceName, targetServiceArray});
     }
 
