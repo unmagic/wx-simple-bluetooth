@@ -55,6 +55,7 @@ class LBlueToothCommonManager extends CommonBLEConnectionOperation {
         return new Promise(async (resolve, reject) => {
             // if (buffer && buffer.byteLength) {
             if (this[isAppOnShow]) {
+
                 await this._sendData({buffer, resolve, reject});
             } else {
                 this[BLEPush].push({buffer, resolve, reject});
@@ -137,15 +138,37 @@ class LBlueToothCommonManager extends CommonBLEConnectionOperation {
             }
         }
     }
+
+    /**
+     * 该函数目前运行有问题，请勿调用，今后修正后再开放
+     * 在扫描周围设备时，我们要以一定规则去连接合适的设备。
+     * 该框架的默认规则是：扫描到周围所有设备，按照setFilter中配置的，在一个上报周期（350ms）内筛选出同一类蓝牙设备，选出信号最强的设备进行连接。
+     * 如果连接失败，会重新扫描，再重复上述流程。
+     * 默认规则是不记录上一个设备的。
+     * 如果你想自己定义这个规则，那么请在此处重写该函数。
+     * 如果使用默认规则，请不要重写该函数。
+     * 在扫描周围设备时，会重复上报同一设备，上报周期350ms。
+     * 每个周期内，如果在此处重写该函数，会回调一次该函数。
+     * @param devices 该数据格式，是 onBluetoothDeviceFound 中返回的devices
+     * @returns {{targetDevice: null}} 返回devices中的一个元素
+     */
+    // overwriteFindTargetDeviceForConnection({devices}) {
+    //     //这样写，意思是在扫描周围设备时，优先连接微信返回的设备列表中，第一个设备
+    //     //如果targetDevice传的是null，则会忽略本次扫描结果
+    //     const [device] = devices;
+    //     return {targetDevice: device && device.deviceId ? device : null};
+    // }
 }
 
 const commonManager = Symbol();
 export default class LBlueToothManager {
     constructor({debug = true} = {}) {
         this[commonManager] = new LBlueToothCommonManager({debug});
-        if (this.overwriteFindTargetDeviceForConnected) {
-            this[commonManager] = this.overwriteFindTargetDeviceForConnected;
-        }
+        // const fun = this.overwriteFindTargetDeviceForConnection;
+        // if (typeof fun === "function") {
+        //     this[commonManager].overwriteFindTargetDeviceForConnectedObj = {fun, context: this};
+        // }
+        // this[commonManager].init();
     }
 
     initBLEProtocol({bleProtocol}) {
