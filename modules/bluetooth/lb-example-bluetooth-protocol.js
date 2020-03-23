@@ -1,6 +1,6 @@
 import {LBlueToothProtocolOperator} from "./lb-ble-common-protocol-operator/index";
-import SendBody from "./lb-ble-example-protocol-body/send-body";
-import ReceiveBody from "./lb-ble-example-protocol-body/receive-body";
+import SendRuler from "./lb-ble-example-protocol-body/send-ruler";
+import ReceiveRuler from "./lb-ble-example-protocol-body/receive-ruler";
 import {ProtocolState} from "./lb-bluetooth-state-example";
 
 /**
@@ -10,7 +10,7 @@ import {ProtocolState} from "./lb-bluetooth-state-example";
  */
 export const getAppBLEProtocol = new class extends LBlueToothProtocolOperator {
     constructor() {
-        super({protocolSendBody: new SendBody(), protocolReceiveBody: new ReceiveBody()});
+        super({protocolSendBody: new SendRuler(), protocolReceiveBody: new ReceiveRuler()});
     }
 
     /**

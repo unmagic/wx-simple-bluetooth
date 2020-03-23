@@ -4,7 +4,7 @@ import {CommonProtocolState} from "../lb-ble-common-state/state";
 /**
  * 蓝牙接收数据后，截取有效数据及自定义的蓝牙协议状态给子类
  */
-export default class IBLEProtocolReceiveBody {
+export default class IBLEProtocolReceiveRuler {
     /**
      * @param commandIndex 命令字所在位置的索引
      * @param dataStartIndex 有效数据开始的索引

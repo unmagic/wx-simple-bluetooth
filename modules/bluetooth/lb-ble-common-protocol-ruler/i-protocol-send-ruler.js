@@ -1,6 +1,6 @@
 import {HexTools} from "../lb-ble-common-tool/index";
 
-export default class IBLEProtocolSendBody {
+export default class IBLEProtocolSendRuler {
     createBuffer({command, data}) {
         const dataBody = this.createDataBody({command, data});
         return new Uint8Array(dataBody).buffer;
@@ -40,7 +40,7 @@ export default class IBLEProtocolSendBody {
 
 
     /**
-     * 有效数据前的数据
+     * 有效数据之前的数据
      * 关于有效数据前的数据相关的介绍，见 IBLEProtocolReceiveBody类的{getEffectiveReceiveData}函数的相关介绍
      *
      * @param command {String} 命令字
