@@ -1,7 +1,8 @@
 import CommonBLEConnectionOperation from "./base/common-ble-connection-operation";
 import {CommonConnectState, CommonProtocolState} from "../lb-ble-common-state/state";
 
-const MAX_WRITE_NUM = 5, isDebug = Symbol(), BLEPush = Symbol(), reWriteIndex = Symbol(), isAppOnShow = Symbol();
+const MAX_WRITE_NUM = 5, isDebug = Symbol('isDebug'), BLEPush = Symbol('BLEPush'),
+    reWriteIndex = Symbol('reWriteIndex'), isAppOnShow = Symbol('isAppOnShow');
 
 class LBlueToothCommonManager extends CommonBLEConnectionOperation {
 
