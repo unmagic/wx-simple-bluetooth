@@ -2,7 +2,7 @@ import BaseBlueTooth from "./base-bluetooth";
 import {onBLEConnectionStateChange, onBluetoothAdapterStateChange, onBluetoothDeviceFound} from "./wx/apis";
 import {CommonConnectState} from "../../lb-ble-common-state/state";
 
-const BLECloseRemindDialog = Symbol();
+const BLECloseRemindDialog = Symbol('BLECloseRemindDialog');
 /**
  * 蓝牙核心业务的封装
  */
