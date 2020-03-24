@@ -1,4 +1,4 @@
-const blueToothManager = Symbol();
+const blueToothManager = Symbol("LBlueToothProtocolOperator blueToothManager");
 export default class LBlueToothProtocolOperator {
 
     constructor({protocolSendBody, protocolReceiveBody}) {
