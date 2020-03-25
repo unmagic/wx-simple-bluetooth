@@ -5,7 +5,7 @@ const blueToothManager = Symbol("LBlueToothProtocolOperator blueToothManager");
 export default class LBlueToothProtocolOperator {
 
     constructor({protocolSendBody, protocolReceiveBody}) {
-        this._protocolQueue = [];
+        // this._protocolQueue = [];
         this.createBuffer = ({command, effectiveData}) => {
             return protocolSendBody.createBuffer({command, effectiveData});
         };
@@ -57,12 +57,12 @@ export default class LBlueToothProtocolOperator {
     /**
      * 清除未发送的蓝牙协议
      */
-    clearSendProtocol() {
-        let temp;
-        while ((temp = this._protocolQueue.pop())) {
-            clearTimeout(temp);
-        }
-    }
+    // clearSendProtocol() {
+    //     let temp;
+    //     while ((temp = this._protocolQueue.pop())) {
+    //         clearTimeout(temp);
+    //     }
+    // }
 
     /**
      * 接收到协议数据后，需要执行的动作

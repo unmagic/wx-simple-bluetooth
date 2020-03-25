@@ -107,10 +107,10 @@ class LBlueToothCommonManager extends CommonBLEConnectionOperation {
      * 调用此接口会先断开蓝牙连接，停止蓝牙设备的扫描，并关闭蓝牙适配器
      * @returns {PromiseLike<boolean | never> | Promise<boolean | never>}
      */
-    closeAll() {
-        this.bluetoothProtocol.clearSendProtocol();
-        return super.closeAll();
-    }
+    // closeAll() {
+    //     this.bluetoothProtocol.clearSendProtocol();
+    //     return super.closeAll();
+    // }
 
     /**
      * 处理从蓝牙设备接收到的数据的具体实现

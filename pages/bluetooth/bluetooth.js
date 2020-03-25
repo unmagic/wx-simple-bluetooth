@@ -68,7 +68,7 @@ Page({
      * @returns {Promise<void>}
      */
     async disconnectDevice(e) {
-        // closeAll() 不仅会断开蓝牙连接及适配器，也会清空当前在协议发送队列中、但未发送的协议
+        // closeAll() 会断开蓝牙连接、关闭适配器
         await getAppBLEManager.closeAll();
         this.setData({
             device: {}
