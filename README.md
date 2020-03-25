@@ -412,4 +412,5 @@ export {
 
 ### 欢迎打赏
 
-<img src="https://github.com/unmagic/.gif/blob/master/admire/weixin.png" /><img src="https://github.com/unmagic/.gif/blob/master/admire/zhifubao.png" />
+![微信打赏码](https://github.com/unmagic/.gif/blob/master/admire/weixin.png)
+![支付宝二维码](https://github.com/unmagic/.gif/blob/master/admire/zhifubao.png)
