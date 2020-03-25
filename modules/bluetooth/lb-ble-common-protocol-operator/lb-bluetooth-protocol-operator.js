@@ -1,5 +1,5 @@
-import {HexTools} from "../lb-ble-common-tool";
-import {CommonProtocolState} from "../lb-ble-common-state";
+import {HexTools} from "../lb-ble-common-tool/index";
+import {CommonProtocolState} from "../lb-ble-common-state/index";
 
 const blueToothManager = Symbol("LBlueToothProtocolOperator blueToothManager");
 export default class LBlueToothProtocolOperator {

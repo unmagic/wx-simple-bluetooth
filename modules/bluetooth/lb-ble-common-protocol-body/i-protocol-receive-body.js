@@ -1,6 +1,3 @@
-import {HexTools} from "../lb-ble-common-tool/tools";
-import {CommonProtocolState} from "../lb-ble-common-state/state";
-
 /**
  * 蓝牙接收数据后，截取有效数据及自定义的蓝牙协议状态给子类
  * 必须按照约定的协议格式来制定协议
