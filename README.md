@@ -400,7 +400,7 @@ export {
 | 业务 |  对应文件夹 | 示例文件 |
 |  ----  | ----   | -----|
 | 蓝牙连接业务 | `lb-ble-common-connection` | `lb-example-bluetooth-manager.js` | 
-| 蓝牙协议处理 | `lb-ble-common-protocol-body`(继承协议收发格式的组装类)、`lb-ble-common-protocol-operator`(继承实现收发操作类) | `lb-ble-example-protocol-body.`、`lb-example-bluetooth-protocol` | 
+| 蓝牙协议处理 | `lb-ble-common-protocol-body`(继承协议收发格式的组装类)<br>`lb-ble-common-protocol-operator`(继承实现收发操作类) | `lb-ble-example-protocol-body`<br>`lb-example-bluetooth-protocol` | 
 | 蓝牙状态 | `lb-ble-common-state` | `lb-bluetooth-state-example.js`，可额外拓展新的状态 | 
 
 
