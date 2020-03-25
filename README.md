@@ -399,9 +399,11 @@ export {
 
 | 业务 |  对应文件夹 | 示例文件 |
 |  ----  | ----   | -----|
-| 蓝牙连接业务 | `lb-ble-common-connection` | `lb-example-bluetooth-manager.js` | 
-| 蓝牙协议处理 | `lb-ble-common-protocol-body`(继承协议收发格式的组装类)<br>`lb-ble-common-protocol-operator`(继承实现收发操作类) | `lb-ble-example-protocol-body`<br>`lb-example-bluetooth-protocol` | 
-| 蓝牙状态 | `lb-ble-common-state` | `lb-bluetooth-state-example.js`，可额外拓展新的状态 | 
+| 蓝牙连接 | `lb-ble-common-connection`(连接、断连、重连事件的处理) | `abstract-bluetooth.js`(最简单的、调用平台API的连接、断开蓝牙等处理)<br>`base-bluetooth.js`(记录连接到的设备的deviceId、特征字、连接状态等信息，处理蓝牙数据的发送、蓝牙重连)<br>`base-bluetooth-imp.js`(对蓝牙连接结果的捕获，监听蓝牙扫描周围设备、连接、适配器状态事件并给予相应处理) | 
+| 蓝牙协议的组装 | `lb-ble-common-protocol-body`(实现协议收发格式的组装) | `i-protocol-receive-body.js`<br>`i-protocol-send-body.js` | 
+| 蓝牙协议的收发 | `lb-ble-common-protocol-operator`(发送数据和接收数据的代理类) | `lb-bluetooth-protocol-operator.js` | 
+| 蓝牙状态及协议状态 | `lb-ble-common-state` | `lb-bluetooth-state-example.js`，可额外拓展新的状态 | 
+| 蓝牙连接和协议状态事件的订阅及分发 | `lb-ble-common-connection` | `lb-bluetooth-manager.js`(详见`LBlueToothCommonManager`的函数`dealReceiveData({receiveBuffer})`) | 
 
 
 ## LINK
