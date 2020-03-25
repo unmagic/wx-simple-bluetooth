@@ -3,6 +3,10 @@ import {onBLEConnectionStateChange, onBluetoothAdapterStateChange, onBluetoothDe
 import {CommonConnectState} from "../../lb-ble-common-state/state";
 
 const BLECloseRemindDialog = Symbol('BLECloseRemindDialog');
+async function sleep(timeout) {
+    return await new Promise(resolve => setTimeout(() => resolve(), timeout));
+}
+
 /**
  * 蓝牙核心业务的封装
  */
@@ -40,6 +44,19 @@ export default class BaseBlueToothImp extends BaseBlueTooth {
 
         onBluetoothDeviceFound(async (res) => {
             console.log('开始扫描周边设备', res);
+
+            // await sleep(10000);
+            console.log('开始扫描周边设备 已延迟', res);
+
+            // if (myFindTargetDeviceNeedConnectedFun) {
+            //     const {devices} = res, {targetDevice} = myFindTargetDeviceNeedConnectedFun({devices});
+            //     if (targetDevice) {
+            //         const {deviceId} = targetDevice;
+            //         console.log('baseDeviceFindAction 扫描到目标设备，并开始连接', deviceId, targetDevice);
+            //         await this._updateBLEConnectFinalState({promise: super.createBLEConnection({deviceId})});
+            //     }
+            //     return;
+            // }
             if (!this._isConnectBindDevice) {
                 const {devices} = res, {targetDevice} = this.findTargetDeviceNeedConnected({devices});
                 if (targetDevice) {

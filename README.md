@@ -407,6 +407,12 @@ export {
 | 蓝牙状态及协议状态 | `lb-ble-common-state` | `lb-bluetooth-state-example.js`，可额外拓展新的状态 |
 | 蓝牙连接和协议状态事件的订阅 | `lb-ble-common-connection/base` | `base-bluetooth-imp.js` |
 
+
+### 框架的蓝牙连接规则
+在
+
+
+
 下面讲下蓝牙连接和协议状态的分发
 
 ### 蓝牙连接状态事件的分发

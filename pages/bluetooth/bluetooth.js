@@ -19,7 +19,6 @@ Page({
      */
     onLoad(options) {
         this.ui = new UI(this);
-        console.log(app);
         //监听蓝牙连接状态、订阅蓝牙协议接收事件
         //多次订阅只会在最新订阅的函数中生效。
         //建议在app.js中订阅，以实现全局的事件通知
