@@ -396,9 +396,13 @@ export {
 ```
 
 ## 深入了解框架
-- 蓝牙连接业务统一被封装在`lb-ble-common-connection`中。详见示例`lb-example-bluetooth-manager.js`。
-- 蓝牙协议处理被拆分为多个子模块，分别为`lb-ble-common-protocol-body`(继承实现收发协议格式)、`lb-ble-common-protocol-operator`(继承实现收发操作)。详见示例`lb-ble-example-protocol-body.`、`lb-example-bluetooth-protocol`
-- 蓝牙状态统一被封装在`lb-ble-common-state`，可额外拓展。详见`lb-bluetooth-state-example.js`中示例。
+
+| 业务 |  对应文件夹 | 示例文件 |
+|  ----  | ----   | -----|
+| 蓝牙连接业务 | `lb-ble-common-connection` | `lb-example-bluetooth-manager.js` | 
+| 蓝牙协议处理 | `lb-ble-common-protocol-body`(继承协议收发格式的组装类)、`lb-ble-common-protocol-operator`(继承实现收发操作类) | `lb-ble-example-protocol-body.`、`lb-example-bluetooth-protocol` | 
+| 蓝牙状态 | `lb-ble-common-state` | `lb-bluetooth-state-example.js`，可额外拓展新的状态 | 
+
 
 ## LINK
 
