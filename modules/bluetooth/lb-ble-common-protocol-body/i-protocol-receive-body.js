@@ -33,8 +33,7 @@ export default class IBLEProtocolReceiveBody {
         const doAction = action[commandHex];
         if (doAction) {
             const actionTemp = doAction({dataArray});
-            const protocolState = actionTemp?.protocolState;
-            if (protocolState) {
+            if (actionTemp?.protocolState) {
                 const {protocolState, effectiveData} = actionTemp;
                 return {protocolState, effectiveData};
             } else {
