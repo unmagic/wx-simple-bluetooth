@@ -398,37 +398,58 @@ export {
 
 ## 深入了解框架
 
-| 业务 |  对应文件夹 | 示例文件 | 函数 |
-|  ----  | ----   | -----| ----- |
+| 业务 |  对应文件夹 | 示例文件 |
+|  ----  | ----   | -----|
 | 蓝牙连接 | `lb-ble-common-connection`(连接、断连、重连事件的处理) | `abstract-bluetooth.js`(最简单的、调用平台API的连接、断开蓝牙等处理)<br>`base-bluetooth.js`(记录连接到的设备的deviceId、特征字、连接状态等信息，处理蓝牙数据的发送、蓝牙重连)<br>`base-bluetooth-imp.js`(对蓝牙连接结果的捕获，监听蓝牙扫描周围设备、连接、适配器状态事件并给予相应处理) | * |
-| 蓝牙协议的组装 | `lb-ble-common-protocol-body`(实现协议收发格式的组装) | `i-protocol-receive-body.js`<br>`i-protocol-send-body.js` | * |
-| 蓝牙协议的收发 | `lb-ble-common-protocol-operator`(处理发送数据和接收数据的代理) | `lb-bluetooth-protocol-operator.js` | * |
-| 蓝牙协议的重发 | `lb-ble-common-connection` | `lb-bluetooth-manager.js`(详见`LBlueToothCommonManager`) | * |
-| 蓝牙状态及协议状态 | `lb-ble-common-state` | `lb-bluetooth-state-example.js`，可额外拓展新的状态 | *|
-| 蓝牙连接和协议状态事件的订阅 | `lb-ble-common-connection/base` | `base-bluetooth-imp.js` | 设置监听`setBLEListener` |
-| 蓝牙连接状态事件的分发 | `lb-ble-common-connection/base` | `base-bluetooth.js` | `连接状态改变`->`set latestConnectState({value, filter = false})`->`触发_onConnectStateChanged函数回调` |
-| 蓝牙协议状态事件的分发(一) | `lb-ble-common-connection` |  | `abstract-bluetooth.js onBLECharacteristicValueChange中接收到协议`->`调用派生类函数lb-bluetooth-manager.js dealReceiveData处理协议数据`-> `蓝牙协议状态事件的分发(二)`  |
-| 蓝牙协议状态事件的分发(二) | `lb-ble-common-protocol-body` | `i-protocol-receive-body.js` | 由`receive`函数，生成有效数据 -> 按在`lb-example-bluetooth-protocol.js`中`getReceiveAction`的配置项， |
-| 蓝牙连接和协议状态事件的分发(二) | `lb-ble-common-protocol-body` | `i-protocol-receive-body.js` | 获取`receive({action, receiveBuffer})` |
+| 蓝牙协议的组装 | `lb-ble-common-protocol-body`(实现协议收发格式的组装) | `i-protocol-receive-body.js`<br>`i-protocol-send-body.js` |  
+| 蓝牙协议的收发 | `lb-ble-common-protocol-operator`(处理发送数据和接收数据的代理) | `lb-bluetooth-protocol-operator.js` |  
+| 蓝牙协议的重发 | `lb-ble-common-connection` | `lb-bluetooth-manager.js`(详见`LBlueToothCommonManager`) |
+| 蓝牙状态及协议状态 | `lb-ble-common-state` | `lb-bluetooth-state-example.js`，可额外拓展新的状态 |
+| 蓝牙连接和协议状态事件的订阅 | `lb-ble-common-connection/base` | `base-bluetooth-imp.js` |
+
+下面讲下蓝牙连接和协议状态的分发
 
 ### 蓝牙连接状态事件的分发
 文件位于`lb-ble-common-connection/base/base-bluetooth.js`
 
-1. 某一时刻连接状态改变，将新的状态赋值给`latestConnectState`
-2. 触发其`setter`函数`set latestConnectState`
-3. 执行内部的`_onConnectStateChanged`函数回调
+1. 某一时刻连接状态改变，将新的状态赋值给`latestConnectState`对象。
+2. 触发其`setter`函数`set latestConnectState`。
+3. 执行`setter`内部的`_onConnectStateChanged`函数回调。
+4. 在`getAppBLEManager.setBLEListener`的`onConnectStateChanged({connectState})`函数中接收到连接状态。
 
 
 ### 蓝牙协议状态事件的分发
 
 `onBLECharacteristicValueChange`位于`lb-ble-common-connection/abstract-bluetooth.js`
+`receiveOperation`位于`lb-ble-common-protocol-operator/lb-bluetooth-protocol-operator.js`
 
+在`onBLECharacteristicValueChange`函数中，我在接收到数据后，将数据按`receive-body.js`来截取有效数据，并按`lb-example-bluetooth-protocol.js`中`getReceiveAction`的配置方式来处理有效数据，生产出对应的`value, protocolState`。
+`filter`是在接收到未知协议时会生成。
+```
+ onBLECharacteristicValueChange((res) => {
+            console.log('接收到消息', res);
+            if (!!valueChangeListener) {
+                const {value, protocolState, filter} = this.dealReceiveData({receiveBuffer: res.value});
+                !filter && valueChangeListener({protocolState, value});
+            }
+        });
 
-1. `onBLECharacteristicValueChange`中接收到协议。
-2. 执行`dealReceiveData`处理协议数据。这里的`dealReceiveData`是最终交由`lb-bluetooth-manager.js`中的`dealReceiveData`函数来处理数据的。
-3. 执行`this.bluetoothProtocol.receive({receiveBuffer})`来生成有效数据和协议状态。这个`receive`最终由`i-protocol-receive-body.js`中的`receive`函数代理执行。
-4. 
+```
 
+这段代码看起来简单，但背后要经历很多流程。
+最关键的是这一行`const {value, protocolState, filter} = this.dealReceiveData({receiveBuffer: res.value});`。
+下面我详细的讲一下这一行做了哪些事儿：
+
+1. 执行`dealReceiveData`函数处理协议数据。这里的`dealReceiveData`，最终交由`lb-bluetooth-manager.js`中的`dealReceiveData`函数来处理数据。
+2. 在`dealReceiveData`中执行`this.bluetoothProtocol.receive({receiveBuffer})`来生成有效数据和协议状态。这个`receive`最终交由`receiveOperation`函数执行。
+3. `receiveOperation`在执行时会引用到`LBlueToothProtocolOperator`的子类的配置项`getReceiveAction`(子类是`lb-example-bluetooth-protocol.js`)。
+4. `getReceiveAction`按开发者自己的实现最终返回约定对象`{protocolState,effectiveData}`，该对象返回给`receiveOperation`后进行一次检查（对未在`getReceiveAction`中配置的协议`protocolState`按`CommonProtocolState.UNKNOWN`处理），将该约定对象返回给`dealReceiveData`函数中的局部变量`effectiveData, protocolState`。
+5. `protocolState!==CommonProtocolState.UNKNOWN`的对应对象，会被标记为`filter:true`；否则将约定对象返回给`onBLECharacteristicValueChange`函数中的局部变量`value, protocolState`。
+
+以上是这一行代码所做的所有事情。
+
+约定对象，会作为参数传入`valueChangeListener({protocolState, value})`并执行回调。
+之后前端就能接收到订阅的事件啦，即在`getAppBLEManager.setBLEListener`的`onReceiveData({protocolState, value})`函数中接收到协议类型和`value`对象。
 
 
 ## LINK
