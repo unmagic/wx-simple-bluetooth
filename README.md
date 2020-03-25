@@ -406,11 +406,11 @@ export {
 
 [LICENSE](https://github.com/unmagic/wx-simple-bluetooth/blob/master/LICENSE)
 
-### 交流
+## 交流
 
 技术交流请加QQ群：821711186
 
-### 欢迎打赏
+## 欢迎打赏
 
 ![微信打赏码](https://github.com/unmagic/.gif/blob/master/admire/weixin.png)
 ![支付宝二维码](https://github.com/unmagic/.gif/blob/master/admire/zhifubao.png)
