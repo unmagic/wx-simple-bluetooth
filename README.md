@@ -127,7 +127,7 @@ Page({
      * @returns {Promise<void>}
      */
     async disconnectDevice(e) {
-        // closeAll() 不仅会断开蓝牙连接及适配器，也会清空当前在协议发送队列中、但未发送的协议
+        // closeAll() 会断开蓝牙连接、关闭适配器
         await getAppBLEManager.closeAll();
         this.setData({
             device: {}
@@ -398,13 +398,37 @@ export {
 
 ## 深入了解框架
 
-| 业务 |  对应文件夹 | 示例文件 |
-|  ----  | ----   | -----|
-| 蓝牙连接 | `lb-ble-common-connection`(连接、断连、重连事件的处理) | `abstract-bluetooth.js`(最简单的、调用平台API的连接、断开蓝牙等处理)<br>`base-bluetooth.js`(记录连接到的设备的deviceId、特征字、连接状态等信息，处理蓝牙数据的发送、蓝牙重连)<br>`base-bluetooth-imp.js`(对蓝牙连接结果的捕获，监听蓝牙扫描周围设备、连接、适配器状态事件并给予相应处理) | 
-| 蓝牙协议的组装 | `lb-ble-common-protocol-body`(实现协议收发格式的组装) | `i-protocol-receive-body.js`<br>`i-protocol-send-body.js` | 
-| 蓝牙协议的收发 | `lb-ble-common-protocol-operator`(发送数据和接收数据的代理类) | `lb-bluetooth-protocol-operator.js` | 
-| 蓝牙状态及协议状态 | `lb-ble-common-state` | `lb-bluetooth-state-example.js`，可额外拓展新的状态 | 
-| 蓝牙连接和协议状态事件的订阅及分发 | `lb-ble-common-connection` | `lb-bluetooth-manager.js`(详见`LBlueToothCommonManager`的函数`dealReceiveData({receiveBuffer})`) | 
+| 业务 |  对应文件夹 | 示例文件 | 函数 |
+|  ----  | ----   | -----| ----- |
+| 蓝牙连接 | `lb-ble-common-connection`(连接、断连、重连事件的处理) | `abstract-bluetooth.js`(最简单的、调用平台API的连接、断开蓝牙等处理)<br>`base-bluetooth.js`(记录连接到的设备的deviceId、特征字、连接状态等信息，处理蓝牙数据的发送、蓝牙重连)<br>`base-bluetooth-imp.js`(对蓝牙连接结果的捕获，监听蓝牙扫描周围设备、连接、适配器状态事件并给予相应处理) | * |
+| 蓝牙协议的组装 | `lb-ble-common-protocol-body`(实现协议收发格式的组装) | `i-protocol-receive-body.js`<br>`i-protocol-send-body.js` | * |
+| 蓝牙协议的收发 | `lb-ble-common-protocol-operator`(处理发送数据和接收数据的代理) | `lb-bluetooth-protocol-operator.js` | * |
+| 蓝牙协议的重发 | `lb-ble-common-connection` | `lb-bluetooth-manager.js`(详见`LBlueToothCommonManager`) | * |
+| 蓝牙状态及协议状态 | `lb-ble-common-state` | `lb-bluetooth-state-example.js`，可额外拓展新的状态 | *|
+| 蓝牙连接和协议状态事件的订阅 | `lb-ble-common-connection/base` | `base-bluetooth-imp.js` | 设置监听`setBLEListener` |
+| 蓝牙连接状态事件的分发 | `lb-ble-common-connection/base` | `base-bluetooth.js` | `连接状态改变`->`set latestConnectState({value, filter = false})`->`触发_onConnectStateChanged函数回调` |
+| 蓝牙协议状态事件的分发(一) | `lb-ble-common-connection` |  | `abstract-bluetooth.js onBLECharacteristicValueChange中接收到协议`->`调用派生类函数lb-bluetooth-manager.js dealReceiveData处理协议数据`-> `蓝牙协议状态事件的分发(二)`  |
+| 蓝牙协议状态事件的分发(二) | `lb-ble-common-protocol-body` | `i-protocol-receive-body.js` | 由`receive`函数，生成有效数据 -> 按在`lb-example-bluetooth-protocol.js`中`getReceiveAction`的配置项， |
+| 蓝牙连接和协议状态事件的分发(二) | `lb-ble-common-protocol-body` | `i-protocol-receive-body.js` | 获取`receive({action, receiveBuffer})` |
+
+### 蓝牙连接状态事件的分发
+文件位于`lb-ble-common-connection/base/base-bluetooth.js`
+
+1. 某一时刻连接状态改变，将新的状态赋值给`latestConnectState`
+2. 触发其`setter`函数`set latestConnectState`
+3. 执行内部的`_onConnectStateChanged`函数回调
+
+
+### 蓝牙协议状态事件的分发
+
+`onBLECharacteristicValueChange`位于`lb-ble-common-connection/abstract-bluetooth.js`
+
+
+1. `onBLECharacteristicValueChange`中接收到协议。
+2. 执行`dealReceiveData`处理协议数据。这里的`dealReceiveData`是最终交由`lb-bluetooth-manager.js`中的`dealReceiveData`函数来处理数据的。
+3. 执行`this.bluetoothProtocol.receive({receiveBuffer})`来生成有效数据和协议状态。这个`receive`最终由`i-protocol-receive-body.js`中的`receive`函数代理执行。
+4. 
+
 
 
 ## LINK

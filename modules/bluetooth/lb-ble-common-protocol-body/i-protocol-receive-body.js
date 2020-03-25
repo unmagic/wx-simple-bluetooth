@@ -17,36 +17,6 @@ export default class IBLEProtocolReceiveBody {
     }
 
     /**
-     * 处理接收的数据，返回截取到的有效数据、及{LBlueToothProtocolOperator}子类中配置的协议状态
-     * @param action
-     * @param receiveBuffer 从蓝牙底层获取到的蓝牙数据
-     * @returns {{effectiveData:Array, protocolState: String}|{protocolState: string}} effectiveData 截取到的有效数据 protocolState 配置的协议状态
-     */
-    receive({action, receiveBuffer}) {
-        const receiveArray = [...new Uint8Array(receiveBuffer.slice(0, 20))];
-        let command = receiveArray[this.commandIndex];
-        let commandHex = `0x${HexTools.numToHex(command)}`;
-        console.log('[IBLEProtocolReceiveBody] the receive data command is:', commandHex);
-
-        const {dataArray} = this.getEffectiveReceiveData({receiveArray});
-
-        const doAction = action[commandHex];
-        if (doAction) {
-            const actionTemp = doAction({dataArray});
-            if (actionTemp?.protocolState) {
-                const {protocolState, effectiveData} = actionTemp;
-                return {protocolState, effectiveData};
-            } else {
-                console.log('接收到的协议已处理完成，因[getReceiveAction]中对应的协议未返回协议状态protocolState，所以本次不通知协议状态');
-                return {protocolState: CommonProtocolState.UNKNOWN};
-            }
-        } else {
-            console.warn('接收到的协议无法在[getReceiveAction]中找到对应的协议，可能是您忘记添加了，或是接收到了无效协议，所以本次不通知协议状态');
-            return {protocolState: CommonProtocolState.UNKNOWN};
-        }
-    }
-
-    /**
      * 在接收到的数据中，按你指定的规则获取有效数据
      * 啥叫有效数据，按照我目前制定的协议规则，是这种[...命令字前的数据，命令字，...有效数据，...有效数据之后的数据(包括校验位)]
      * 发送蓝牙协议也是按照这个规则来制定的。
