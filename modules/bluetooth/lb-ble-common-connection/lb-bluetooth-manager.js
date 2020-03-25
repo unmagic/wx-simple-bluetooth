@@ -28,7 +28,8 @@ class LBlueToothCommonManager extends CommonBLEConnectionOperation {
     }
 
     async resendBLEData() {
-        if (this[BLEPush] && this[BLEPush].length) {
+        const blePushArrayLength = this[BLEPush]?.length;
+        if (blePushArrayLength) {
             let item;
             while (!!(item = this[BLEPush].shift())) {
                 this[isDebug] && console.warn('回到前台，重新发送蓝牙协议', item);

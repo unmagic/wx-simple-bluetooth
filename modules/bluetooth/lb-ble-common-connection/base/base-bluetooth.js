@@ -154,7 +154,7 @@ export default class BaseBlueTooth extends AbstractBlueTooth {
      */
     getConnectedDeviceId() {
         if (!this._deviceId) {
-            this._deviceId = getStorageSync('lb_ble_$deviceId') || '';
+            this._deviceId = getStorageSync('lb_ble_$deviceId') ?? '';
         }
         return this._deviceId;
     }

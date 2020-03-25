@@ -74,7 +74,7 @@ export default class BaseBlueToothImp extends BaseBlueTooth {
     findTargetDeviceNeedConnected({devices}) {
         const targetDeviceName = this._targetDeviceName, tempFilterArray = [];
         for (let device of devices) {
-            if (device.localName && device.localName.includes(targetDeviceName)) {
+            if (device.localName?.includes(targetDeviceName)) {
                 this._isConnectBindDevice = true;
                 tempFilterArray.push(device);
             }
