@@ -154,7 +154,7 @@ Page({
 ```
 
 ### 2、接下来是如何定制你自己的蓝牙业务：
-#### 1. 设置你自己的`setFilter`函数参数。
+#### 1. 设置你自己的`setFilter`函数参数、扫描过滤规则(可选)
 文件位于`./modules/bluetooth/lb-example-bluetooth-manager.js`
 
 ```
@@ -182,6 +182,7 @@ export const getAppBLEManager = new class extends LBlueToothManager {
             scanInterval: 350//扫描周围设备，重复上报的时间间隔，毫秒制，非必填，默认是350ms
         });
         super.initBLEProtocol({bleProtocol: getAppBLEProtocol});
+        //setMyFindTargetDeviceNeedConnectedFun函数调用可选，不实现过滤规则框架会按默认规则执行
         super.setMyFindTargetDeviceNeedConnectedFun({
             /**
              * 重复上报时的过滤规则，并返回过滤结果
