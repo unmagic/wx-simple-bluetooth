@@ -50,15 +50,16 @@ export default class BaseBlueToothImp extends BaseBlueTooth {
             // await sleep(10000);
             console.log('开始扫描周边设备 已延迟', res);
 
-            // if (myFindTargetDeviceNeedConnectedFun) {
-            //     const {devices} = res, {targetDevice} = myFindTargetDeviceNeedConnectedFun({devices});
-            //     if (targetDevice) {
-            //         const {deviceId} = targetDevice;
-            //         console.log('baseDeviceFindAction 扫描到目标设备，并开始连接', deviceId, targetDevice);
-            //         await this._updateBLEConnectFinalState({promise: super.createBLEConnection({deviceId})});
-            //     }
-            //     return;
-            // }
+            if (myFindTargetDeviceNeedConnectedFun) {
+                console.log('进入自定义事件');
+                const {devices} = res, {targetDevice} = myFindTargetDeviceNeedConnectedFun({devices});
+                if (targetDevice) {
+                    const {deviceId} = targetDevice;
+                    console.log('baseDeviceFindAction 扫描到目标设备，并开始连接', deviceId, targetDevice);
+                    await this._updateBLEConnectFinalState({promise: super.createBLEConnection({deviceId})});
+                }
+                return;
+            }
             if (!this._isConnectBindDevice) {
                 const {devices} = res, {targetDevice} = this.findTargetDeviceNeedConnected({devices});
                 if (targetDevice) {

@@ -22,7 +22,7 @@ export const getAppBLEManager = new class extends LBlueToothManager {
         });
         super.initBLEProtocol({bleProtocol: getAppBLEProtocol});
         setMyFindTargetDeviceNeedConnectedFun({
-            fun: () => {
+            connectTargetFun: ({devices}) => {
 
             }
         })

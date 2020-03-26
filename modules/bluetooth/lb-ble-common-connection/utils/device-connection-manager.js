@@ -1,8 +1,8 @@
 
 let myFindTargetDeviceNeedConnectedFun;
 
-function setMyFindTargetDeviceNeedConnectedFun({fun}) {
-    myFindTargetDeviceNeedConnectedFun = fun;
+function setMyFindTargetDeviceNeedConnectedFun({connectTargetFun}) {
+    myFindTargetDeviceNeedConnectedFun = connectTargetFun;
 }
 
 export {setMyFindTargetDeviceNeedConnectedFun, myFindTargetDeviceNeedConnectedFun};
