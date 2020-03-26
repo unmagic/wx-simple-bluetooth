@@ -23,7 +23,8 @@
 ### 新的版本包括多种新的特性：
 - 提供了完整的示例及较为详细的注释。
 - 重构了蓝牙连接以及重连的整个流程，使其更加稳定和顺畅，也提高了部分场景下重连的速度。`（有些蓝牙连接问题是微信兼容或是手机问题，目前是无法解决的。如错误码10003以及部分华为手机蓝牙连接或重连困难。如果您有很好的解决方案，还请联系我，十分感谢）`
-- 只有在连接到蓝牙设备并使用特征字注册了read、write、notify监听后才算连接成功。
+- 只有在连接到蓝牙设备并使用特征值注册了read、write、notify监听后才算连接成功。
+- 在扫描周围设备时，可按自定义的规则去过滤多余设备，连接指定设备。详见示例`lb-example-bluetooth-manager.js`。 
 - 新增蓝牙协议配置文件，可以很方便的发送和接收蓝牙协议。
 - 小程序退入后台会自动缓存要发送的协议，待回到前台后重新发送（如果[小程序冷启动](https://developers.weixin.qq.com/miniprogram/dev/framework/runtime/operating-mechanism.html)了，则协议队列会被重新初始化）。
 - 优化了蓝牙状态更新和蓝牙协议更新的订阅方式。现在可以更清晰的区分是蓝牙的状态更新还是接收到了新的协议（以及接收到的协议数据是什么），并且会过滤掉与上一条完全相同的通知。
@@ -166,18 +167,47 @@ import {getAppBLEProtocol} from "./lb-example-bluetooth-protocol";
 export const getAppBLEManager = new class extends LBlueToothManager {
     constructor() {
         super();
-        //setFilter详情见
-        super.setFilter({
-            services: ['0000xxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'],//必填
-            targetServiceArray: [{
-                serviceId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',//必填
-                writeCharacteristicId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxE',//必填
-                notifyCharacteristicId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxF',//必填
-                readCharacteristicId: '',//非必填
-            }],
-            targetDeviceName: '目标蓝牙设备的广播数据段中的 LocalName 数据段，如：smart-voice'//非必填
-        });
-        super.initBLEProtocol({bleProtocol: getAppBLEProtocol});
+        //setFilter详情见父类
+                super.setFilter({
+                    services: ['0000xxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'],//必填
+                    targetServiceArray: [{
+                        serviceId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',//必填
+                        writeCharacteristicId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxE',//必填
+                        notifyCharacteristicId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxF',//必填
+                        readCharacteristicId: '',//非必填
+                    }],
+                    targetDeviceName: '目标蓝牙设备的广播数据段中的 LocalName 数据段，如：smart-voice',//非必填，在判断时是用String.prototype.includes()函数来处理的，所以targetDeviceName不必是全称
+                    scanInterval: 350//扫描周围设备，重复上报的时间间隔，毫秒制，非必填，默认是350ms
+                });
+                super.initBLEProtocol({bleProtocol: getAppBLEProtocol});
+                super.setMyFindTargetDeviceNeedConnectedFun({
+                    /**
+                     * 重复上报时的过滤规则，并返回过滤结果
+                     * 在执行完该过滤函数，并且该次连接蓝牙有了最终结果后，才会在下一次上报结果回调时，再次执行该函数。
+                     * 所以如果在一次过滤过程中或是连接蓝牙，耗时时间很长，导致本次连接结果还没得到，就接收到了下一次的上报结果，则会忽略下一次{scanFilterRuler}的执行。
+                     * 如果不指定这个函数，则会使用默认的连接规则
+                     * 默认的连接规则详见 lb-ble-common-connection/utils/device-connection-manager.js的{defaultFindTargetDeviceNeedConnectedFun}
+                     * @param devices {*}是wx.onBluetoothDeviceFound(cb)中返回的{devices}
+                     * @param targetDeviceName {string}是{setFilter}中的配置项
+                     * @returns {{targetDevice: null}|{targetDevice: *}} 最终返回对象{targetDevice}，是数组{devices}其中的一个元素；{targetDevice}可返回null，意思是本次扫描结果未找到指定设备
+                     */
+                    scanFilterRuler: ({devices, targetDeviceName}) => {
+                        console.log('执行自定义的扫描过滤规则');
+                        const tempFilterArray = [];
+                        for (let device of devices) {
+                            if (device.localName?.includes(targetDeviceName)) {
+                                tempFilterArray.push(device);
+                            }
+                        }
+                        if (tempFilterArray.length) {
+                            const device = tempFilterArray.reduce((pre, cur) => {
+                                return pre.RSSI > cur.RSSI ? pre : cur;
+                            });
+                            return {targetDevice: device};
+                        }
+                        return {targetDevice: null};
+                    }
+                })
     }
 
     /**
@@ -401,18 +431,12 @@ export {
 
 | 业务 |  对应文件夹 | 示例文件 |
 |  ----  | ----   | -----|
-| 蓝牙连接 | `lb-ble-common-connection`(连接、断连、重连事件的处理) | `abstract-bluetooth.js`(最简单的、调用平台API的连接、断开蓝牙等处理)<br>`base-bluetooth.js`(记录连接到的设备的deviceId、特征字、连接状态等信息，处理蓝牙数据的发送、蓝牙重连)<br>`base-bluetooth-imp.js`(对蓝牙连接结果的捕获，监听蓝牙扫描周围设备、连接、适配器状态事件并给予相应处理) | * |
+| 蓝牙连接 | `lb-ble-common-connection`(连接、断连、重连事件的处理) | `abstract-bluetooth.js`(最简单的、调用平台API的连接、断开蓝牙等处理)<br>`base-bluetooth.js`(记录连接到的设备的deviceId、特征值、连接状态等信息，处理蓝牙数据的发送、蓝牙重连)<br>`base-bluetooth-imp.js`(对蓝牙连接结果的捕获，监听蓝牙扫描周围设备、连接、适配器状态事件并给予相应处理) | * |
 | 蓝牙协议的组装 | `lb-ble-common-protocol-body`(实现协议收发格式的组装) | `i-protocol-receive-body.js`<br>`i-protocol-send-body.js` |  
 | 蓝牙协议的收发 | `lb-ble-common-protocol-operator`(处理发送数据和接收数据的代理) | `lb-bluetooth-protocol-operator.js` |  
 | 蓝牙协议的重发 | `lb-ble-common-connection` | `lb-bluetooth-manager.js`(详见`LBlueToothCommonManager`) |
 | 蓝牙状态及协议状态 | `lb-ble-common-state` | `lb-bluetooth-state-example.js`，可额外拓展新的状态 |
 | 蓝牙连接和协议状态事件的订阅 | `lb-ble-common-connection/base` | `base-bluetooth-imp.js` |
-
-
-### 框架的蓝牙连接规则
-在
-
-
 
 下面讲下蓝牙连接和协议状态的分发
 
