@@ -59,6 +59,7 @@ export default class BaseBlueToothImp extends BaseBlueTooth {
                             this._isConnectBindDevice = false;
                         }
                     } else {
+                        console.log('本周期内未找到指定设备，开始下一个扫描周期');
                         this._isConnectBindDevice = false;
                     }
                 } catch (e) {
