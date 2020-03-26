@@ -5,10 +5,6 @@ import {myFindTargetDeviceNeedConnectedFun} from "../utils/device-connection-man
 
 const BLECloseRemindDialog = Symbol('BLECloseRemindDialog');
 
-async function sleep(timeout) {
-    return await new Promise(resolve => setTimeout(() => resolve(), timeout));
-}
-
 /**
  * 蓝牙核心业务的封装
  */
@@ -46,9 +42,6 @@ export default class BaseBlueToothImp extends BaseBlueTooth {
 
         onBluetoothDeviceFound(async (res) => {
             console.log('开始扫描周边设备', res);
-
-            // await sleep(10000);
-            console.log('开始扫描周边设备 已延迟', res);
 
             if (myFindTargetDeviceNeedConnectedFun) {
                 console.log('进入自定义事件');
