@@ -8,7 +8,7 @@ import {getAppBLEProtocol} from "./lb-example-bluetooth-protocol";
 export const getAppBLEManager = new class extends LBlueToothManager {
     constructor() {
         super();
-        //setFilter详情见
+        //setFilter详情见父类
         super.setFilter({
             services: ['0000xxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'],//必填
             targetServiceArray: [{

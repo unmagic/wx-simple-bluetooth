@@ -1,6 +1,6 @@
 import CommonBLEConnectionOperation from "./base/common-ble-connection-operation";
 import {CommonConnectState, CommonProtocolState} from "../lb-ble-common-state/state";
-import {setMyFindTargetDeviceNeedConnectedFun} from "./utils/device-connection-manager";
+import {setMyFindTargetDeviceNeedConnectedFun, setScanInterval} from "./utils/device-connection-manager";
 
 const MAX_WRITE_NUM = 5, isDebug = Symbol('isDebug'), BLEPush = Symbol('BLEPush'),
     reWriteIndex = Symbol('reWriteIndex'), isAppOnShow = Symbol('isAppOnShow');
@@ -155,6 +155,7 @@ export default class LBlueToothManager {
             this[commonManager].bluetoothProtocol = bleProtocol;
         }
     }
+
     /**
      * 重复上报时的过滤规则，并返回过滤结果
      * 在执行完该过滤函数，并且该次连接蓝牙有了最终结果后，才会在下一次上报结果回调时，再次执行该函数。
@@ -198,11 +199,13 @@ export default class LBlueToothManager {
     /**
      * 在扫描周围蓝牙设备时，设置用于过滤无关设备的信息
      * 正常来说，该函数只需要调用一次
-     * @param services 必填 要搜索的蓝牙设备主 service 的 uuid 列表。详情见微信小程序官网，对于wx.startBluetoothDevicesDiscovery接口的介绍
-     * @param targetServiceArray 必填 用于通信的服务uuid及对应的特征值、notify、read、write属性，目前只会与传入的第一组通信，后续会增加与多组服务通信的功能
-     * @param targetDeviceName 非必填 蓝牙设备名称 与localName一致即可，区分大小写。如果不填写这一项或填写为空字符串，则将要连接的设备是经services过滤后的扫描到的第一个设备
+     * @param services {array}必填 要搜索的蓝牙设备主 service 的 uuid 列表。详情见微信小程序官网，对于wx.startBluetoothDevicesDiscovery接口的介绍
+     * @param targetServiceArray {array}必填 用于通信的服务uuid及对应的特征值、notify、read、write属性，目前只会与传入的第一组通信，后续会增加与多组服务通信的功能
+     * @param targetDeviceName {string}非必填 蓝牙设备名称 与localName一致即可，区分大小写。如果不填写这一项或填写为空字符串，则将要连接的设备是经services过滤后的扫描到的第一个设备
+     * @param scanInterval {number}非必填，扫描周围设备，重复上报的时间间隔，毫秒制，默认是350ms
      */
-    setFilter({services, targetServiceArray, targetDeviceName}) {
+    setFilter({services, targetServiceArray, targetDeviceName, scanInterval = 350}) {
+        setScanInterval(scanInterval);
         this[commonManager].setFilter({services, targetDeviceName, targetServiceArray});
     }
 

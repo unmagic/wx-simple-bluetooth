@@ -1,7 +1,12 @@
 let findTargetDeviceNeedConnectedFun = defaultFindTargetDeviceNeedConnectedFun;
+let scanInterval = 350;
 
 function setMyFindTargetDeviceNeedConnectedFun({scanFilterRuler}) {
     findTargetDeviceNeedConnectedFun = typeof scanFilterRuler === 'function' ? scanFilterRuler : defaultFindTargetDeviceNeedConnectedFun;
+}
+
+function setScanInterval(interval) {
+    scanInterval = interval ?? 350;
 }
 
 /**
@@ -28,4 +33,4 @@ function defaultFindTargetDeviceNeedConnectedFun({devices, targetDeviceName}) {
     return {targetDevice: null};
 }
 
-export {setMyFindTargetDeviceNeedConnectedFun, findTargetDeviceNeedConnectedFun};
+export {setMyFindTargetDeviceNeedConnectedFun, setScanInterval, findTargetDeviceNeedConnectedFun, scanInterval};

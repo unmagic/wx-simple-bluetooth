@@ -19,6 +19,7 @@ import {
     writeBLECharacteristicValue
 } from "./wx/apis";
 import IBLEOperator from "./inter/i-ble-operator";
+import {scanInterval} from "../utils/device-connection-manager";
 
 
 // function dontNeedOperation({errMsg}) {
@@ -159,7 +160,7 @@ export default class AbstractBlueTooth extends IBLEOperator {
     }
 
     async startBlueToothDevicesDiscovery() {
-        return await startBlueToothDevicesDiscovery({services: this.UUIDs, allowDuplicatesKey: true, interval: 350});
+        return await startBlueToothDevicesDiscovery({services: this.UUIDs, allowDuplicatesKey: true, interval: scanInterval});
     }
 
     async stopBlueToothDevicesDiscovery() {
