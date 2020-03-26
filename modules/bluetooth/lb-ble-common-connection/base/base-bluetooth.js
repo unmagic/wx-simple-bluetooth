@@ -75,7 +75,7 @@ export default class BaseBlueTooth extends AbstractBlueTooth {
             try {
                 await super.stopBlueToothDevicesDiscovery();
             } catch (e) {
-                console.error('连接完成后，停止扫描周围设备失败', e);
+                console.warn('连接前，stopBlueToothDevicesDiscovery error', e);
             }
             this.setDefaultOnBLEConnectionStateChangeListener();
             const {serviceId, characteristicId} = await super.createBLEConnection({
