@@ -118,7 +118,7 @@ export default class BaseBlueTooth extends AbstractBlueTooth {
                     return {isConnected: false, filter: true};//这种是需要重新执行一遍扫描连接流程的，filter是否过滤掉本次事件
                 case 10004:
                     await super.closeBLEConnection({deviceId});
-                    return this.createBLEConnection({deviceId});
+                    return await this.createBLEConnection({deviceId});
                 default:
                     console.warn('连接失败，重新连接', error);
                     return await this.createBLEConnection({deviceId});
