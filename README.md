@@ -487,6 +487,10 @@ export {
 
 [Document](https://blog.csdn.net/sinat_27612147/article/details/84634432)
 
+[ChangeLog](https://github.com/unmagic/wx-simple-bluetooth/blob/master/log/ChangeLog.md)
+
+[QA](https://github.com/unmagic/wx-simple-bluetooth/blob/master/log/QA.md)
+
 [LICENSE](https://github.com/unmagic/wx-simple-bluetooth/blob/master/LICENSE)
 
 ## 交流
