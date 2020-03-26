@@ -96,7 +96,7 @@ export default class AbstractBlueTooth extends IBLEOperator {
     constructor() {
         super();
         this.UUIDs = [];
-        this._targetServiceArray = {};//暂时是service及write\read\notify特征字
+        this._targetServiceArray = {};//暂时是service及write\read\notify特征值
     }
 
     async openAdapter() {

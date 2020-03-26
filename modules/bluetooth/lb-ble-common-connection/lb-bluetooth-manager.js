@@ -141,26 +141,6 @@ class LBlueToothCommonManager extends CommonBLEConnectionOperation {
             }
         }
     }
-
-    /**
-     * 该函数目前运行有问题，请勿调用，今后修正后再开放
-     * 在扫描周围设备时，我们要以一定规则去连接合适的设备。
-     * 该框架的默认规则是：扫描到周围所有设备，按照setFilter中配置的，在一个上报周期（350ms）内筛选出同一类蓝牙设备，选出信号最强的设备进行连接。
-     * 如果连接失败，会重新扫描，再重复上述流程。
-     * 默认规则是不记录上一个设备的。
-     * 如果你想自己定义这个规则，那么请在此处重写该函数。
-     * 如果使用默认规则，请不要重写该函数。
-     * 在扫描周围设备时，会重复上报同一设备，上报周期350ms。
-     * 每个周期内，如果在此处重写该函数，会回调一次该函数。
-     * @param devices 该数据格式，是 onBluetoothDeviceFound 中返回的devices
-     * @returns {{targetDevice: null}} 返回devices中的一个元素
-     */
-    // overwriteFindTargetDeviceForConnection({devices}) {
-    //     //这样写，意思是在扫描周围设备时，优先连接微信返回的设备列表中，第一个设备
-    //     //如果targetDevice传的是null，则会忽略本次扫描结果
-    //     const [device] = devices;
-    //     return {targetDevice: device && device.deviceId ? device : null};
-    // }
 }
 
 const commonManager = Symbol();
@@ -175,7 +155,18 @@ export default class LBlueToothManager {
             this[commonManager].bluetoothProtocol = bleProtocol;
         }
     }
-
+    /**
+     * 重复上报时的过滤规则，并返回过滤结果
+     * 在执行完该过滤函数，并且该次连接蓝牙有了最终结果后，才会在下一次上报结果回调时，再次执行该函数。
+     * 所以如果在一次过滤过程中或是连接蓝牙，耗时时间很长，导致本次连接结果还没得到，就接收到了下一次的上报结果，则会忽略下一次{scanFilterRuler}的执行。
+     * 如果不指定这个函数，则会使用默认的连接规则
+     * 默认的连接规则详见 lb-ble-common-connection/utils/device-connection-manager.js的{defaultFindTargetDeviceNeedConnectedFun}
+     * {scanFilterRuler}会传递两个参数{devices,targetDeviceName}
+     * {devices}是wx.onBluetoothDeviceFound(cb)中返回的{devices}
+     * {targetDeviceName}是{setFilter}中的配置项
+     * {scanFilterRuler}最终返回对象{targetDevice}，是数组{devices}其中的一个元素；{targetDevice}可返回null，意思是本次扫描结果未找到指定设备
+     * @param scanFilterRuler {function} 扫描过滤规则函数，需返回过滤结果
+     */
     setMyFindTargetDeviceNeedConnectedFun({scanFilterRuler}) {
         setMyFindTargetDeviceNeedConnectedFun({scanFilterRuler});
     }
