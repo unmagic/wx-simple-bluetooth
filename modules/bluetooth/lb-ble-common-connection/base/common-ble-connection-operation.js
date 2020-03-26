@@ -10,16 +10,6 @@ export default class CommonBLEConnectionOperation {
     }
 
     /**
-     * 暂未调用
-     */
-    init() {
-        if (this.overwriteFindTargetDeviceForConnectedObj) {
-            const {fun, context} = this.overwriteFindTargetDeviceForConnectedObj;
-            this[bluetoothManager].findTargetDeviceNeedConnected = fun.bind(context);
-        }
-    }
-
-    /**
      *
      * 订阅蓝牙连接状态变化事件和接收到新的蓝牙协议事件
      * 可只订阅其中一个

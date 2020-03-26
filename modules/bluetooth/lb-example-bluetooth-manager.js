@@ -1,6 +1,5 @@
 import {LBlueToothManager} from "./lb-ble-common-connection/index";
 import {getAppBLEProtocol} from "./lb-example-bluetooth-protocol";
-import {setMyFindTargetDeviceNeedConnectedFun} from "./lb-ble-common-connection/utils/device-connection-manager";
 
 /**
  * 蓝牙连接方式管理类
@@ -21,11 +20,24 @@ export const getAppBLEManager = new class extends LBlueToothManager {
             targetDeviceName: '目标蓝牙设备的广播数据段中的 LocalName 数据段，如：smart-voice'//非必填
         });
         super.initBLEProtocol({bleProtocol: getAppBLEProtocol});
-        // setMyFindTargetDeviceNeedConnectedFun({
-        //     connectTargetFun: ({devices}) => {
-        //
-        //     }
-        // })
+        super.setMyFindTargetDeviceNeedConnectedFun({
+            connectTargetFun: ({devices,targetDeviceName}) => {
+                console.log('执行setMyFindTargetDeviceNeedConnectedFun connectTargetFun');
+                const tempFilterArray = [];
+                for (let device of devices) {
+                    if (device.localName?.includes(targetDeviceName)) {
+                        tempFilterArray.push(device);
+                    }
+                }
+                if (tempFilterArray.length) {
+                    const device = tempFilterArray.reduce((pre, cur) => {
+                        return pre.RSSI > cur.RSSI ? pre : cur;
+                    });
+                    return {targetDevice: device};
+                }
+                return {targetDevice: null};
+            }
+        })
     }
 
     /**

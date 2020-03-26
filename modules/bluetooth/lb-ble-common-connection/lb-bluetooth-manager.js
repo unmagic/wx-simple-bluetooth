@@ -1,5 +1,6 @@
 import CommonBLEConnectionOperation from "./base/common-ble-connection-operation";
 import {CommonConnectState, CommonProtocolState} from "../lb-ble-common-state/state";
+import {setMyFindTargetDeviceNeedConnectedFun} from "./utils/device-connection-manager";
 
 const MAX_WRITE_NUM = 5, isDebug = Symbol('isDebug'), BLEPush = Symbol('BLEPush'),
     reWriteIndex = Symbol('reWriteIndex'), isAppOnShow = Symbol('isAppOnShow');
@@ -166,11 +167,6 @@ const commonManager = Symbol();
 export default class LBlueToothManager {
     constructor({debug = true} = {}) {
         this[commonManager] = new LBlueToothCommonManager({debug});
-        // const fun = this.overwriteFindTargetDeviceForConnection;
-        // if (typeof fun === "function") {
-        //     this[commonManager].overwriteFindTargetDeviceForConnectedObj = {fun, context: this};
-        // }
-        // this[commonManager].init();
     }
 
     initBLEProtocol({bleProtocol}) {
@@ -178,6 +174,10 @@ export default class LBlueToothManager {
             bleProtocol.setBLEManager(this[commonManager]);
             this[commonManager].bluetoothProtocol = bleProtocol;
         }
+    }
+
+    setMyFindTargetDeviceNeedConnectedFun({connectTargetFun}) {
+        setMyFindTargetDeviceNeedConnectedFun({connectTargetFun});
     }
 
     /**

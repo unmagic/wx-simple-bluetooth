@@ -1,7 +1,7 @@
 import BaseBlueTooth from "./base-bluetooth";
 import {onBLEConnectionStateChange, onBluetoothAdapterStateChange, onBluetoothDeviceFound} from "./wx/apis";
 import {CommonConnectState} from "../../lb-ble-common-state/state";
-import {myFindTargetDeviceNeedConnectedFun} from "../utils/device-connection-manager";
+import {findTargetDeviceNeedConnectedFun} from "../utils/device-connection-manager";
 
 const BLECloseRemindDialog = Symbol('BLECloseRemindDialog');
 
@@ -45,8 +45,10 @@ export default class BaseBlueToothImp extends BaseBlueTooth {
             if (!this._isConnectBindDevice) {
                 this._isConnectBindDevice = true;
                 try {
-                    const {devices} = res, {targetDevice} = myFindTargetDeviceNeedConnectedFun ?
-                        myFindTargetDeviceNeedConnectedFun({devices}) : this.findTargetDeviceNeedConnected({devices});
+                    const {devices} = res, {targetDevice} = findTargetDeviceNeedConnectedFun({
+                        devices,
+                        targetDeviceName: this._targetDeviceName ?? ''
+                    });
                     if (targetDevice) {
                         const {deviceId} = targetDevice;
                         console.log('baseDeviceFindAction 扫描到目标设备，并开始连接', deviceId, targetDevice);
@@ -60,7 +62,7 @@ export default class BaseBlueToothImp extends BaseBlueTooth {
                         this._isConnectBindDevice = false;
                     }
                 } catch (e) {
-                    console.error('请在connectTargetFun函数中捕获异常并消费掉，最后要返回对象{targetDevice}');
+                    console.error('请在connectTargetFun函数中捕获异常并消费掉，同事最后要返回对象{targetDevice}');
                     this._isConnectBindDevice = false;
                 }
             } else {
@@ -81,29 +83,6 @@ export default class BaseBlueToothImp extends BaseBlueTooth {
                 }
             };
         }
-    }
-
-    /**
-     * 找到需要连接的蓝牙设备
-     * 该接口可被子类重写
-     * @param devices 一个周期内扫描到的蓝牙设备，周期时长是wx.startBlueToothDevicesDiscovery接口中指定的interval时长
-     * @returns {{targetDevice: null}|{targetDevice: *}}
-     */
-    findTargetDeviceNeedConnected({devices}) {
-        const targetDeviceName = this._targetDeviceName, tempFilterArray = [];
-        for (let device of devices) {
-            if (device.localName?.includes(targetDeviceName)) {
-                // this._isConnectBindDevice = true;
-                tempFilterArray.push(device);
-            }
-        }
-        if (tempFilterArray.length) {
-            const device = tempFilterArray.reduce((pre, cur) => {
-                return pre.RSSI > cur.RSSI ? pre : cur;
-            });
-            return {targetDevice: device};
-        }
-        return {targetDevice: null};
     }
 
     setFilter({services, targetDeviceName = '', targetServiceArray}) {
