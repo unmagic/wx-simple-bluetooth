@@ -121,7 +121,7 @@ export default class BaseBlueTooth extends AbstractBlueTooth {
                     return this.createBLEConnection({deviceId});
                 default:
                     console.warn('连接失败，重新连接', error);
-                    return this.createBLEConnection({deviceId});
+                    return await this.createBLEConnection({deviceId});
             }
         }
     }

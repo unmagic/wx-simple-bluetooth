@@ -1,8 +1,10 @@
 import BaseBlueTooth from "./base-bluetooth";
 import {onBLEConnectionStateChange, onBluetoothAdapterStateChange, onBluetoothDeviceFound} from "./wx/apis";
 import {CommonConnectState} from "../../lb-ble-common-state/state";
+import {myFindTargetDeviceNeedConnectedFun} from "../utils/device-connection-manager";
 
 const BLECloseRemindDialog = Symbol('BLECloseRemindDialog');
+
 async function sleep(timeout) {
     return await new Promise(resolve => setTimeout(() => resolve(), timeout));
 }
@@ -141,6 +143,7 @@ export default class BaseBlueToothImp extends BaseBlueTooth {
             await this.startBlueToothDevicesDiscovery();
         } catch (e) {
             switch (e.errorCode) {
+                case 10000:
                 case 10001:
                     this.dealBLEUnavailableScene();
                     this[BLECloseRemindDialog]();
