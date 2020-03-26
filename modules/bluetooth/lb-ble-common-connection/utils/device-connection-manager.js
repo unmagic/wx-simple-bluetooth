@@ -1,7 +1,7 @@
 let findTargetDeviceNeedConnectedFun = defaultFindTargetDeviceNeedConnectedFun;
 
-function setMyFindTargetDeviceNeedConnectedFun({connectTargetFun}) {
-    findTargetDeviceNeedConnectedFun = typeof connectTargetFun === 'function' ? connectTargetFun : defaultFindTargetDeviceNeedConnectedFun;
+function setMyFindTargetDeviceNeedConnectedFun({scanFilterRuler}) {
+    findTargetDeviceNeedConnectedFun = typeof scanFilterRuler === 'function' ? scanFilterRuler : defaultFindTargetDeviceNeedConnectedFun;
 }
 
 /**

@@ -176,8 +176,8 @@ export default class LBlueToothManager {
         }
     }
 
-    setMyFindTargetDeviceNeedConnectedFun({connectTargetFun}) {
-        setMyFindTargetDeviceNeedConnectedFun({connectTargetFun});
+    setMyFindTargetDeviceNeedConnectedFun({scanFilterRuler}) {
+        setMyFindTargetDeviceNeedConnectedFun({scanFilterRuler});
     }
 
     /**

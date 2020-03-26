@@ -21,8 +21,14 @@ export const getAppBLEManager = new class extends LBlueToothManager {
         });
         super.initBLEProtocol({bleProtocol: getAppBLEProtocol});
         super.setMyFindTargetDeviceNeedConnectedFun({
-            connectTargetFun: ({devices,targetDeviceName}) => {
-                console.log('执行setMyFindTargetDeviceNeedConnectedFun connectTargetFun');
+            /**
+             *
+             * @param devices wx.onBluetoothDeviceFound(cb)中返回的{devices}
+             * @param targetDeviceName {setFilter}中配置的{targetDeviceName}
+             * @returns {{targetDevice: null}|{targetDevice: *}} 最终返回对象{targetDevice}，是数组{devices}其中的一个元素；{targetDevice}可返回null，意思是本次扫描结果未找到指定设备
+             */
+            scanFilterRuler: ({devices, targetDeviceName}) => {
+                console.log('执行自定义的扫描过滤规则');
                 const tempFilterArray = [];
                 for (let device of devices) {
                     if (device.localName?.includes(targetDeviceName)) {
