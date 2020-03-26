@@ -21,11 +21,11 @@ export const getAppBLEManager = new class extends LBlueToothManager {
             targetDeviceName: '目标蓝牙设备的广播数据段中的 LocalName 数据段，如：smart-voice'//非必填
         });
         super.initBLEProtocol({bleProtocol: getAppBLEProtocol});
-        setMyFindTargetDeviceNeedConnectedFun({
-            connectTargetFun: ({devices}) => {
-
-            }
-        })
+        // setMyFindTargetDeviceNeedConnectedFun({
+        //     connectTargetFun: ({devices}) => {
+        //
+        //     }
+        // })
     }
 
     /**

@@ -43,23 +43,38 @@ export default class BaseBlueToothImp extends BaseBlueTooth {
         onBluetoothDeviceFound(async (res) => {
             console.log('开始扫描周边设备', res);
 
-            if (myFindTargetDeviceNeedConnectedFun) {
-                console.log('进入自定义事件');
-                const {devices} = res, {targetDevice} = myFindTargetDeviceNeedConnectedFun({devices});
-                if (targetDevice) {
-                    const {deviceId} = targetDevice;
-                    console.log('baseDeviceFindAction 扫描到目标设备，并开始连接', deviceId, targetDevice);
-                    await this._updateBLEConnectFinalState({promise: super.createBLEConnection({deviceId})});
-                }
-                return;
-            }
+            // if (myFindTargetDeviceNeedConnectedFun) {
+            //     console.log('进入自定义事件');
+            //     const {devices} = res, {targetDevice} = myFindTargetDeviceNeedConnectedFun({devices});
+            //     if (targetDevice) {
+            //         const {deviceId} = targetDevice;
+            //         console.log('baseDeviceFindAction 扫描到目标设备，并开始连接', deviceId, targetDevice);
+            //         await this._updateBLEConnectFinalState({promise: super.createBLEConnection({deviceId})});
+            //     }
+            //     return;
+            // }
             if (!this._isConnectBindDevice) {
-                const {devices} = res, {targetDevice} = this.findTargetDeviceNeedConnected({devices});
-                if (targetDevice) {
-                    const {deviceId} = targetDevice;
-                    console.log('baseDeviceFindAction 扫描到目标设备，并开始连接', deviceId, targetDevice);
-                    await this._updateBLEConnectFinalState({promise: super.createBLEConnection({deviceId})});
+                this._isConnectBindDevice = true;
+                try {
+                    const {devices} = res, {targetDevice} = this.findTargetDeviceNeedConnected({devices}).targetDevice;
+                    if (targetDevice) {
+                        const {deviceId} = targetDevice;
+                        console.log('baseDeviceFindAction 扫描到目标设备，并开始连接', deviceId, targetDevice);
+                        try {
+                            await this._updateBLEConnectFinalState({promise: super.createBLEConnection({deviceId})});
+                        } catch (e) {
+                            console.log('连接出现异常', e);
+                            this._isConnectBindDevice = false;
+                        }
+                    } else {
+                        this._isConnectBindDevice = false;
+                    }
+                } catch (e) {
+                    console.error('请在connectTargetFun函数中捕获异常并消费掉，最后要返回对象{targetDevice}');
+                    this._isConnectBindDevice = false;
                 }
+
+
             }
         });
     }
@@ -88,7 +103,7 @@ export default class BaseBlueToothImp extends BaseBlueTooth {
         const targetDeviceName = this._targetDeviceName, tempFilterArray = [];
         for (let device of devices) {
             if (device.localName?.includes(targetDeviceName)) {
-                this._isConnectBindDevice = true;
+                // this._isConnectBindDevice = true;
                 tempFilterArray.push(device);
             }
         }
