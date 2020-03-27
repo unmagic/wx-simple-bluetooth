@@ -33,17 +33,17 @@
 - 可随时获取到最新的蓝牙连接状态。
 - 各个业务均高度模块化，在深入了解后，可以很方便的拓展。
 
-```
-注意：
-1.必须按照约定的协议格式来制定协议，才能正常使用该框架
-2.协议一包数据最多20个字节。该框架不支持大于20个字节的协议格式。
-```
+### 微信小程序官方蓝牙的部分说明：
+1. 小程序不会对写入数据包大小做限制，但系统与蓝牙设备会限制蓝牙4.0单次传输的数据大小，超过最大字节数后会发生写入错误，建议每次写入不超过20字节。
+2. 若单次写入数据过长，iOS 上存在系统不会有任何回调的情况（包括错误回调）。
+3. wx.writeBLECharacteristicValue并行调用多次会存在写失败的可能性。
 
-## 使用该框架必须要看的内容
-**注意：**
-1.必须按照约定的协议格式来制定协议，才能正常使用该框架
-2.协议一包数据最多20个字节。该框架不支持大于20个字节的协议格式。
-</font>
+**所以基于这方面的考虑，本框架有以下约束：**
+> 1. 必须按照约定的协议格式来制定协议，才能正常使用该框架。
+> 2. 协议一包数据最多20个字节。该框架不支持大于20个字节的协议格式。如果数据超出限制，建议拆分为多次发送。
+> 3. 建议以串行方式执行写操作。
+> 4. 建议先了解清楚[小程序的官方蓝牙文档](https://developers.weixin.qq.com/miniprogram/dev/api/device/bluetooth-ble/wx.writeBLECharacteristicValue.html)，方便理解框架的使用。
+
 ```
 协议约定格式：[...命令字之前的数据(非必需), 命令字(必需), ...有效数据(非必需 如控制灯光发送255,255,255), 有效数据之后的数据(非必需 如协议结束标志校、验位等)
 协议格式示例：[170(帧头), 10(命令字), 1(灯光开启),255,255,255(三个255,白色灯光),233(协议结束标志，有的协议中没有这一位),18(校验位，我胡乱写的)]
@@ -193,7 +193,7 @@ export const getAppBLEManager = new class extends LBlueToothManager {
              * 默认的连接规则详见 lb-ble-common-connection/utils/device-connection-manager.js的{defaultFindTargetDeviceNeedConnectedFun}
              * @param devices {*}是wx.onBluetoothDeviceFound(cb)中返回的{devices}
              * @param targetDeviceName {string}是{setFilter}中的配置项
-             * @returns {{targetDevice: null}|{targetDevice: *}} 最终返回对象{targetDevice}，是数组{devices}其中的一个元素；{targetDevice}可返回null，意思是本次扫描结果未找到指定设备
+             * @returns targetDevice 最终返回对象{targetDevice}，是数组{devices}其中的一个元素；{targetDevice}可返回null，意思是本次扫描结果未找到指定设备
              */
             scanFilterRuler: ({devices, targetDeviceName}) => {
                 console.log('执行自定义的扫描过滤规则');
