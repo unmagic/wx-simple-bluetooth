@@ -30,6 +30,7 @@ Page({
                 switch (connectState) {
                     case ConnectState.CONNECTED:
                         //在连接成功后，紧接着设置灯光颜色和亮度
+                        //发送协议，官方提醒并行调用多次会存在写失败的可能性，所以建议使用串行方式来发送
                         await getAppBLEProtocol.setColorLightAndBrightness({
                             brightness: 100,
                             red: 255,

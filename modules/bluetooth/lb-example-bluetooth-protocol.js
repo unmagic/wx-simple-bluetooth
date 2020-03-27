@@ -93,6 +93,8 @@ export const getAppBLEProtocol = new class extends LBlueToothProtocolOperator {
      * @returns {Promise<[unknown, unknown]>}
      */
     async setColorLightAndBrightness({brightness, red, green, blue}) {
+        //发送协议，小程序官方提醒并行调用多次会存在写失败的可能性，所以建议使用串行方式来发送，哪种方式由你权衡
+        //但我这里是并行发送了两条0x01和0x02两条协议，仅演示用
         return Promise.all([this.sendAction['0x01']({red, green, blue}), this.sendAction['0x02']({brightness})]);
     }
 
